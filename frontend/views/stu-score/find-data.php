@@ -10,7 +10,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <form class="number2" action="" method="POST">
         <h2>成绩查询结果</h2>
         <div class="logo">
-            <img src="/imgs/hrjt.jpg" alt="">
+            <img src="/imgs/hrjt2.png" alt="">
         </div>
 
         <h4>学生信息</h4>

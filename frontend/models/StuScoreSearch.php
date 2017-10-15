@@ -127,9 +127,8 @@ class StuScoreSearch extends StuScore
                 'mobile'   => $v['mobile'],
                 'grade'    => $v['grade'],
                 'school'   => $v['school'],
-                'subject'  => $v['subject'],
                 'batch'    => $v['batch'],
-                'batch_name'=> $v['subject']
+                'batch_name'=> $v['batch_name']
             ];
             $ret['data'][] = [
                 'subject' => $v['subject'],
