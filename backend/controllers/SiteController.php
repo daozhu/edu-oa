@@ -60,6 +60,8 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        $this->redirect(['stu-score/index']);
+        Yii::$app->end();
         return $this->render('index');
     }
 
