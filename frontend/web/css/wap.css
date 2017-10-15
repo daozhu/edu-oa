@@ -1,0 +1,377 @@
+.container,
+body,
+html {
+    height: 100%
+}
+
+.container,
+.container small.help-block {
+    color: #fff
+}
+
+.container.check .row,
+.container.check h2 {
+    box-shadow: 0 7px 17px -1px rgba(0, 0, 0, .6)
+}
+
+.none {
+    display: none
+}
+
+.h1,
+.h2,
+.h3,
+.h4,
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: "Microsoft Yahei";
+    margin: 0
+}
+
+.container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    text-align: center;
+    background-color: #0bb20c;
+    overflow: auto;
+}
+
+.container .logo {
+    height: 7%;
+    text-align: left;
+    margin: 4%
+}
+
+.container .number,
+.container .number2,
+.container .number .logo {
+    text-align: center
+}
+
+.container .logo img {
+    height: 100%
+}
+
+.container i {
+    padding: 2% 4%
+}
+
+.container .number {
+    width: 70%;
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    top: 43%;
+    left: 50%;
+    -webkit-transform: translate3d(-50%, -50%, 0);
+    transform: translate3d(-50%, -50%, 0)
+}
+.container .number2 {
+    width: 70%;
+    margin: auto;
+}
+.container .number2 h2 {
+    font-size: 2rem;
+    margin: 7% 0;
+    letter-spacing: .5rem;
+    font-weight: 900
+}
+
+.container .number .logo img {
+    width: 150px
+}
+/* number2 s */
+.container .number2 .logo img {
+    width: 150px;
+}
+
+.container .number2 .logo {
+    text-align: center
+}
+
+
+/* number2 e */
+.container .number2 input {
+    background: #fff;
+    border: none;
+    padding: 9% 4%;
+    color: #000
+}
+
+.container .number2 .btn {
+    color: #fff;
+    background: #3E8A39;
+    width: 100%;
+    padding: 4% 0;
+    font-size: 2rem;
+    letter-spacing: .6rem
+}
+
+.container .number2 p {
+    margin: 10% 0 0
+}
+
+.container .number2 p a {
+    color: #fff;
+    letter-spacing: .3rem
+}
+
+.container .number2 .tips {
+    margin: 5% 0 5% 0;
+    font-size: 1rem;
+    letter-spacing: .1rem
+}
+
+.container .number2.info {
+    height: 100%;
+    top: 5%;
+    left: 0;
+    width: 100%;
+    padding: 3%;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0)
+}
+
+.vertical i,
+.vertical p {
+    position: absolute;
+    top: 50%
+}
+
+.container .number.info .member-info {
+    margin: 0 auto;
+    margin-bottom:15%;
+    height: 70%;
+    width: 100%;
+    border-radius: 5px
+}
+
+.container .number.info .member-info ul {
+    padding: 5% 5% 5% 1%;
+    height: 100%
+}
+
+.container .number.info .member-info ul li {
+    height: 13.28%;
+    list-style-type: none
+}
+
+.container .number.info .member-info ul li .col-xs-4,
+.container .number.info .member-info ul li .col-xs-8 {
+    padding: 0;
+    height: 100%;
+    font-weight: 700;
+    transition: all .5s;
+    font-size: 1.5rem;display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+
+}
+.container .number.info .member-info ul li .col-xs-4{
+    letter-spacing: 2px;
+}
+.container .number.info .member-info ul li .col-xs-8 {
+
+    border-bottom: 1px solid #fff;
+    font-size: 1.4rem;
+    font-weight: bolder;
+    /* letter-spacing: 2px */
+}
+
+.container .number.info .member-info ul li:hover .col-xs-4 {
+    background: rgba(0, 0, 0, .06)
+}
+
+.container .number.info .member-info ul li:hover .col-xs-8 {
+    background: rgba(0, 0, 0, .04)
+}
+
+.has-error .checkbox,
+.has-error .checkbox-inline,
+.has-error .control-label,
+.has-error .form-control,
+.has-error .form-control-feedback,
+.has-error .form-control:focus,
+.has-error .help-block,
+.has-error .radio,
+.has-error .radio-inline,
+.has-error.checkbox label,
+.has-error.checkbox-inline label,
+.has-error.radio label,
+.has-error.radio-inline label,
+.has-success .checkbox,
+.has-success .checkbox-inline,
+.has-success .control-label,
+.has-success .form-control,
+.has-success .form-control-feedback,
+.has-success .form-control:focus,
+.has-success .help-block,
+.has-success .radio,
+.has-success .radio-inline,
+.has-success.checkbox label,
+.has-success.checkbox-inline label,
+.has-success.radio label,
+.has-success.radio-inline label {
+    color: #000;
+    border-color: #1dd2af
+}
+
+.vertical {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background: #fff;
+    z-index: 10
+}
+
+.vertical i {
+    font-size: 12rem;
+    color: #000;
+    left: 50%;
+    margin: -120px 0 0 -60px;
+    -webkit-animation: verticalPhone 5s infinite;
+    animation: verticalPhone 5s infinite
+}
+
+.vertical p {
+    left: 50%;
+    font-size: 2rem;
+    margin: 10px 0 0 -150px
+}
+
+@-webkit-keyframes verticalPhone {
+    0% {
+        -webkit-transform: rotate(-90deg);
+        transform: rotate(-90deg);
+        opacity: 0
+    }
+    5% {
+        -webkit-transform: rotate(-90deg);
+        transform: rotate(-90deg);
+        opacity: 1
+    }
+    75% {
+        -webkit-transform: rotate(0);
+        transform: rotate(0)
+    }
+    95% {
+        opacity: 1
+    }
+    100% {
+        opacity: 0
+    }
+}
+
+@keyframes verticalPhone {
+    0% {
+        -webkit-transform: rotate(-90deg);
+        transform: rotate(-90deg);
+        opacity: 0
+    }
+    5% {
+        -webkit-transform: rotate(-90deg);
+        transform: rotate(-90deg);
+        opacity: 1
+    }
+    75% {
+        -webkit-transform: rotate(0);
+        transform: rotate(0)
+    }
+    95% {
+        opacity: 1
+    }
+    100% {
+        opacity: 0
+    }
+}
+
+.container.check .number {
+    padding: 0;
+    top: 0
+}
+
+.container.check h2 {
+    margin: 0;
+    padding: 5% 0
+}
+
+.container.check .border1 {
+    width: 100%;
+    height: 1px;
+    border-bottom: 2px dashed #3AAF8F;
+    clear: both;
+    margin: 10% 0
+}
+
+.container.check .row {
+    margin: 0;
+    position: relative;
+    clear: both;
+    padding: 10% 0
+}
+
+.container.check .row h3 {
+    font-size: 1.5rem;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin: -11px 0 0 -22px
+}
+
+.container.check .row .col-xs-4,
+.container.check .row .col-xs-8 {
+    padding: 0;
+    height: 100%;
+    color: #fff;
+    font-size: 1.7rem;
+    text-align: left
+}
+
+.container.check .row .col-xs-4 i {
+    font-size: 3.5rem;
+    color: #fff;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    height: 100%;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center
+}
+
+.container.check .row .col-xs-8 dl {
+    margin: 0
+}
+.container.check .row .col-xs-8 dt {
+    /* text-align:center; */
+}
+.container.check .row .col-xs-8 dd {
+    display: inline-block;
+    margin: 5% 0 0 10%
+}
+
+.container.check .row .col-xs-8 a {
+    color: #fff;
+    font-size: 1.3rem;
+    font-family: FontAwesome
+}
+
+.container.check .row .col-xs-8 a:before {
+    content: "\f192";margin-right: 5px;
+}
