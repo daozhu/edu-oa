@@ -51,7 +51,7 @@ AppAsset::register($this);
             . '</li>';
     }
     $menuMid = [];
-    if (Yii::$app->user->isGuest) {
+    if (!Yii::$app->user->isGuest) {
         $menuMid = [
             ['label' => '成绩查询', 'url' => ['/stu-score/index']],
             ['label' => '导入成绩', 'url' => ['/stu-score/export']],
