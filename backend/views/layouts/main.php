@@ -50,11 +50,13 @@ AppAsset::register($this);
             . Html::endForm()
             . '</li>';
     }
-
-    $menuMid = [
-        ['label' => '成绩查询', 'url' => ['/stu-score/index']],
-        ['label' => '导入成绩', 'url' => ['/stu-score/export']],
-    ];
+    $menuMid = [];
+    if (Yii::$app->user->isGuest) {
+        $menuMid = [
+            ['label' => '成绩查询', 'url' => ['/stu-score/index']],
+            ['label' => '导入成绩', 'url' => ['/stu-score/export']],
+        ];
+    }
 
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-left'],
