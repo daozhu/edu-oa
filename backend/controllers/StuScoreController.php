@@ -10,6 +10,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
 use backend\models\StuScoreExport;
+use yii\filters\AccessControl;
 
 /**
  * StuScoreController implements the CRUD actions for StuScore model.
@@ -22,6 +23,20 @@ class StuScoreController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                //'only' => $this->actions(),
+                'rules' => [
+                    [
+                        //'actions' => $this->actions(),
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+                //'denyCallback' => function($rule, $action){
+                //    throw new \Exception('您暂无权限查看此页面');
+                //}
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
