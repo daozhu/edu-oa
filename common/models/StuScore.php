@@ -175,12 +175,33 @@ class StuScore extends \yii\db\ActiveRecord
                 'created_at',
                 'updated_at',
             ];
+            $insert_column_default_v = [
+                'stu_name' => '-',
+                'sex' => '-',
+                'age' => 0,
+                'mobile' => '1',
+                'grade' => '-',
+                'school' => '-',
+                'subject' => '-',
+                'score' => '-',
+                'type' => 1,
+                'batch_name' => '-',
+                'batch' => '0',
+                'export_file' => '-',
+                'created_at' => time(),
+                'updated_at' => time(),
+            ];
             $ex_data = [1, HTMLPurifier::process($all_data['title']), $all_data['batch'], str_ireplace(Yii::$app->basePath, '', $file), time(), time()];
 
             $insert_data = [];
             foreach( $all_data['data'] as $k => $v ) {
                 $subs = array_slice($v, 6);
                 $info = array_slice($v, 0, 6);
+                foreach ($info as $kk => &$vv) {
+                    if (empty($vv)) {
+                        $vv = $insert_column_default_v[$insert_header[$kk]] ?? '0';
+                    }
+                }
                 foreach ($subs as $sub_key => $score) {
                     $tmp            = $info;
                     $t_sub          = $all_data['header'][(int)(6 + $sub_key)] ?? '';

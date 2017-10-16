@@ -16,19 +16,26 @@ class StuScoreExport extends Model
      */
     public $up_file;
     public $save_path = '/upload/score/';
+    public $real_path = '';
 
     public function rules()
     {
         return [
             //[['up_file'], 'file', 'skipOnEmpty' => false, 'extensions' => 'xls, xlsx'],
-            [['up_file'], 'file', 'skipOnEmpty' => false, 'extensions' => ['xls, xlsx']],
+            //[['up_file'], 'file', 'skipOnEmpty' => false, 'extensions' => 'xls, xlsx'],
+            [['up_file'], 'file', 'skipOnEmpty' => false],
         ];
     }
 
     public function upload()
     {
         if ($this->validate()) {
-            $this->up_file->saveAs(Yii::$app->basePath . $this->save_path . $this->up_file->baseName . '.' . $this->up_file->extension);
+            $this->real_path = Yii::$app->basePath
+                . $this->save_path
+                . date('YmdHis', time())
+                . $this->up_file->baseName
+                . '.' . $this->up_file->extension;
+            $this->up_file->saveAs($this->real_path);
             return true;
         } else {
             return false;
@@ -38,6 +45,6 @@ class StuScoreExport extends Model
     // just for single file ..
     public function getFilePath()
     {
-        return Yii::$app->basePath . $this->save_path . $this->up_file->baseName . '.' . $this->up_file->extension;
+        return $this->real_path;
     }
 }
