@@ -21,7 +21,7 @@ class StuScoreExport extends Model
     {
         return [
             //[['up_file'], 'file', 'skipOnEmpty' => false, 'extensions' => 'xls, xlsx'],
-            [['up_file'], 'file', 'skipOnEmpty' => false, 'extensions' => 'xls, xlsx'],
+            [['up_file'], 'file', 'skipOnEmpty' => false, 'extensions' => ['xls, xlsx']],
         ];
     }
 
