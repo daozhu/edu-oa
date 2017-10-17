@@ -99,7 +99,7 @@ class StuScore extends \yii\db\ActiveRecord
             }
         }
         $i = 1;
-        $PHPExcel = $PHPReader->load ( $filePath );
+        $PHPExcel = $PHPReader->load( $filePath );
         $currentSheet = $PHPExcel->getSheet ( 0 );
         $allColumn = $currentSheet->getHighestColumn ();
         $allColumn = \PHPExcel_Cell::columnIndexFromString($allColumn);
