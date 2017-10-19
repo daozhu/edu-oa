@@ -213,17 +213,37 @@ class StuScore extends \yii\db\ActiveRecord
                 }
             }
 
-            //$ret = 0;
-            $ret = Yii::$app->db->createCommand()->batchInsert(static::tableName(), $insert_header, $insert_data)->execute();
-            Yii::error([
-                'insert' => $insert_data,
-                'all' => $all_data,
-                'ret' => $ret,
-            ]);
+            $need_insert = [];
+            $j = 0;
+            foreach($insert_data as $k => $v) {
+                //column=>value
+                $col_v = array_combine($insert_header, $v);
+                $up_ret = Yii::$app->db->createCommand()->update(static::tableName(), $col_v, [
+                    'mobile' => $v[3],
+                    'grade' => $v[4],
+                    'subject' => $v[6],
+                    'batch' => $v[10],
+                ])->execute();
+                if (!$up_ret) {
+                    $need_insert[] = $v;
+                } else {
+                    $j++;
+                }
+            }
+            $ret = 0;
+            if (!empty($need_insert)) {
+                $ret = Yii::$app->db->createCommand()
+                    ->batchInsert(static::tableName(), $insert_header, $need_insert)->execute();
+                Yii::error([
+                    'insert' => $insert_data,
+                    'all' => $all_data,
+                    'ret' => $ret,
+                ]);
+            }
 
             if ($ret>=0) {
                 $tran->commit();
-                return ['code' => 200, 'msg' => "保存成功 : 共有". $ret.'条数据保存成功' ];
+                return ['code' => 200, 'msg' => "保存成功 : 共有". $ret.'条数据保存, 更新 :'.$j. "条" ];
             } else {
                 return ['code' => 500, 'msg' => "保存失败" ];
             }
