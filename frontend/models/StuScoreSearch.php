@@ -130,11 +130,12 @@ class StuScoreSearch extends StuScore
                 'batch'    => $v['batch'],
                 'batch_name'=> $v['batch_name']
             ];
-            $ret['data'][] = [
+            $ret['data'][$v['subject']] = [
                 'subject' => $v['subject'],
                 'score'   => $v['score']
             ];
         }
+        unset($data);
 
         if(!empty($ret['data'])) {
             $ret['code'] = 200;
