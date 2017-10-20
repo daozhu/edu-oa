@@ -123,6 +123,9 @@ class StuScore extends \yii\db\ActiveRecord
                     $batch = explode('(', $title);
                     if (!empty($batch) || !is_array($batch)) {
                         $batch = trim($batch[1], ')');
+                        if (empty($batch)) {
+                            $batch = date('Ymd', time());
+                        }
                     }
                     break;
                 }
@@ -223,6 +226,7 @@ class StuScore extends \yii\db\ActiveRecord
                     'grade' => $v[4],
                     'subject' => $v[6],
                     'batch' => $v[10],
+                    'status' => 1
                 ])->execute();
                 if (!$up_ret) {
                     $need_insert[] = $v;
@@ -234,11 +238,11 @@ class StuScore extends \yii\db\ActiveRecord
             if (!empty($need_insert)) {
                 $ret = Yii::$app->db->createCommand()
                     ->batchInsert(static::tableName(), $insert_header, $need_insert)->execute();
-                Yii::error([
+                /*Yii::error([
                     'insert' => $insert_data,
                     'all' => $all_data,
                     'ret' => $ret,
-                ]);
+                ]);*/
             }
 
             if ($ret>=0) {

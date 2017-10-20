@@ -141,6 +141,8 @@ class StuScoreController extends Controller
                     'ret' => $ret,
                     'req' => Yii::$app->request->post()
                 ]);
+            } else {
+                //..
             }
         }
         //...搜索逻辑重写

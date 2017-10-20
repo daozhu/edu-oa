@@ -136,6 +136,14 @@ class StuScoreSearch extends StuScore
             ];
         }
         unset($data);
+        //总分在最后一个
+        $total = ($ret['data']['总分'])??0;
+        if (!empty($total)) {
+            unset($ret['data']['总分']);
+            array_push($ret['data'], $total);
+        } else {
+            //cal them ..
+        }
 
         if(!empty($ret['data'])) {
             $ret['code'] = 200;
