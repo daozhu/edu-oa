@@ -143,7 +143,6 @@ class StuScoreController extends Controller
     public function actionExport()
     {
         $model = new StuScoreExport();
-
         $ret = '';
         if (Yii::$app->request->isPost) {
             $model->up_file = UploadedFile::getInstance($model, 'up_file');

@@ -25,6 +25,9 @@ require_once (Yii::$app->basePath . "/../common/extensions/PHPExcel/PHPExcel.php
  */
 class StuScore extends \yii\db\ActiveRecord
 {
+    const STATUE_ON = 1;//状态:有效
+    const STATUS_OFF = 0;
+
     /**
      * @inheritdoc
      */
@@ -71,8 +74,8 @@ class StuScore extends \yii\db\ActiveRecord
             'export_file' => '文件',
             'type' => '类型',
             'status' => '状态',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'created_at' => '创建时间',
+            'updated_at' => '最后更新时间',
         ];
     }
 
@@ -205,28 +208,47 @@ class StuScore extends \yii\db\ActiveRecord
                         $vv = $insert_column_default_v[$insert_header[$kk]] ?? '0';
                     }
                 }
+                $total_score = 0;
+                $count_subs = count($subs);
                 foreach ($subs as $sub_key => $score) {
                     $tmp            = $info;
                     $t_sub          = $all_data['header'][(int)(6 + $sub_key)] ?? '';
                     if (empty($t_sub)) continue;
                     $tmp[]          = $t_sub;
-                    $tmp[]          = number_format((int)$score,1);
-                    $tmp            = array_merge($tmp, $ex_data);
-                    $insert_data[]  = $tmp;
+                    if ($sub_key == ($count_subs - 1)) {
+                        //总分
+                        $tmp[]          = $total_score;
+                        $tmp            = array_merge($tmp, $ex_data);
+                        $insert_data[]  = $tmp;
+                    } else {
+                        $total_score   += number_format((float)$score,1);
+
+                        $tmp[]          = number_format((float)$score,1);
+                        $tmp            = array_merge($tmp, $ex_data);
+                        $insert_data[]  = $tmp;
+                    }
                 }
             }
-
+            //Yii::error([
+                //'insert' => $insert_data,
+                //'all' => $all_data,
+                //'ret' => $insert_data,
+            //]);
             $need_insert = [];
             $j = 0;
             foreach($insert_data as $k => $v) {
                 //column=>value
-                $col_v = array_combine($insert_header, $v);
+                $tmp_h = $insert_header;
+                $tmp_v = $v;
+                unset($tmp_h[12]);
+                unset($tmp_v[12]);
+                $col_v = array_combine($tmp_h, $tmp_v);
                 $up_ret = Yii::$app->db->createCommand()->update(static::tableName(), $col_v, [
-                    'mobile' => $v[3],
-                    'grade' => $v[4],
-                    'subject' => $v[6],
-                    'batch' => $v[10],
-                    'status' => 1
+                    'mobile'   => $v[3],
+                    'grade'    => $v[4],
+                    'subject'  => $v[6],
+                    'batch'    => $v[10],
+                    'status'   => 1
                 ])->execute();
                 if (!$up_ret) {
                     $need_insert[] = $v;
@@ -238,11 +260,6 @@ class StuScore extends \yii\db\ActiveRecord
             if (!empty($need_insert)) {
                 $ret = Yii::$app->db->createCommand()
                     ->batchInsert(static::tableName(), $insert_header, $need_insert)->execute();
-                /*Yii::error([
-                    'insert' => $insert_data,
-                    'all' => $all_data,
-                    'ret' => $ret,
-                ]);*/
             }
 
             if ($ret>=0) {
