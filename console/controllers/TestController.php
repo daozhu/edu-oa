@@ -13,6 +13,7 @@ use yii\console\Controller;
 use \Yii;
 use yii\helpers\BaseConsole;
 
+use common\models\Docx2Txt;
 /*
  * console test
  * */
@@ -45,13 +46,23 @@ class TestController extends Controller
      * */
     public function actionReadWord()
     {
+        $path = Yii::getAlias('@backend').'/upload/paper/test-21.docx';
 
-        require_once Yii::$app->basePath.'/../vendor/phpoffice/phpword/samples/Sample_Header.php';
-        $path = Yii::getAlias('@backend').'/upload/paper/test.docx';
-        $phpWord = \PhpOffice\PhpWord\IOFactory::load($path);
+        // 实例化
+        $text = new Docx2Txt();
+        // 加载docx文件
+        $text->setDocx($path);
+        // 将内容存入$docx变量中
+        $docx = $text->extract();
+        // 调试输出
+        var_dump($docx);
+
+        //require_once Yii::$app->basePath.'/../vendor/phpoffice/phpword/samples/Sample_Header.php';
+        //$path = Yii::getAlias('@backend').'/upload/paper/test.docx';
+        //$phpWord = \PhpOffice\PhpWord\IOFactory::load($path);
         //print_r($phpWord);
-        echo write($phpWord, basename(Yii::getAlias('@backend').'/upload/paper/ee', '.php'), $writers);
-        $this->stdout($path, BaseConsole::FG_RED);
+        //echo write($phpWord, basename(Yii::getAlias('@backend').'/upload/paper/ee', '.php'), $writers);
+        //$this->stdout($path, BaseConsole::FG_RED);
 
     }
 
