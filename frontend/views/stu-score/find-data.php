@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tr>
                 <tr>
                     <td class="">考试批次</td>
-                    <td class=""><?= $ret['info']['batch']?></td>
+                    <td class=""><?= $ret['info']['batch_name']?></td>
                 </tr>
             </table>
 
