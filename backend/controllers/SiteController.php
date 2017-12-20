@@ -12,6 +12,16 @@ use common\models\LoginForm;
  */
 class SiteController extends Controller
 {
+
+    public function beforeAction($action)
+    {
+        if ($action->id == 'sync') {
+            $action->controller->enableCsrfValidation = false;
+        }
+
+        parent::beforeAction($action);
+        return true;
+    }
     /**
      * @inheritdoc
      */
@@ -22,7 +32,7 @@ class SiteController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['login', 'error'],
+                        'actions' => ['login', 'error', 'sync'],
                         'allow' => true,
                     ],
                     [
@@ -36,6 +46,7 @@ class SiteController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'logout' => ['post'],
+                    'sync' => ['post'],
                 ],
             ],
         ];
@@ -96,5 +107,31 @@ class SiteController extends Controller
         Yii::$app->user->logout();
 
         return $this->goHome();
+    }
+
+
+    // login status login
+    public function actionSync ()
+    {
+        if (Yii::$app->request->isPost && isset($_POST['data'])) {
+            $data = base64_decode(Yii::$app->request->post('data'));
+            $data = json_decode($data, true);
+            if (isset($data['ret']) && $data['ret'] == 'ok') {
+                $se1 = isset($data['c1']) ? $data['c1'] : [];
+                $se2 = isset($data['c2']) ? $data['c2'] : [];
+
+                if (!empty($se1) && !empty($se2)) {
+                    Yii::$app->session->set($se1['c_name'], $se1['c_v']);
+                    Yii::$app->session->set($se2['c_name'], $se2['c_v']);
+                    Yii::$app->session->set('hahahha', $se2['c_v']);
+                    Yii::$app->session->set('hahahha3333', $se1['c_v']);
+                }
+            }
+
+            Yii::error($data);
+        }
+
+
+        return;
     }
 }

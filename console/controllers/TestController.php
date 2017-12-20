@@ -46,16 +46,18 @@ class TestController extends Controller
      * */
     public function actionReadWord()
     {
-        $path = Yii::getAlias('@backend').'/upload/paper/test-21.docx';
+        //$path = Yii::getAlias('@backend').'/upload/paper/test-21.docx';
+        $path = '/Users/jingzhiheng/Desktop/test-22.docx';
 
         // 实例化
         $text = new Docx2Txt();
         // 加载docx文件
         $text->setDocx($path);
         // 将内容存入$docx变量中
-        $docx = $text->extract();
+        //$docx = $text->extract();
+        $docx = $text->resolve();
         // 调试输出
-        var_dump($docx);
+        //var_dump($docx);
 
         //require_once Yii::$app->basePath.'/../vendor/phpoffice/phpword/samples/Sample_Header.php';
         //$path = Yii::getAlias('@backend').'/upload/paper/test.docx';

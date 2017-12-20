@@ -17,6 +17,15 @@ use yii\filters\AccessControl;
  */
 class StuScoreController extends Controller
 {
+    public function beforeAction($action)
+    {
+
+        parent::beforeAction($action);
+        return true;
+    }
+
+
+
     /**
      * @inheritdoc
      */
@@ -144,6 +153,8 @@ class StuScoreController extends Controller
     {
         $model = new StuScoreExport();
         $ret = '';
+        $test_se = Yii::$app->session;
+        Yii::error($test_se, '==========');
         if (Yii::$app->request->isPost) {
             $model->up_file = UploadedFile::getInstance($model, 'up_file');
             if ($model->upload()) {

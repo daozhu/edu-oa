@@ -469,7 +469,8 @@ class Docx2Txt
         if ((($ilvl != -1) && ($numId != -1)) || (1)) {
             $ret .= $this->separator();
         }
-
+        echo "\r\n2222222222222222222\r\n";
+        var_dump($ret);
         return $ret;
     }
 
@@ -515,6 +516,8 @@ class Docx2Txt
                 $output .= $this->separator();
             }
         }
+        echo "\r\1111111111111111\r\n";
+        var_dump($output);
         return $output;
     }
 
@@ -533,5 +536,38 @@ class Docx2Txt
         $xml = $node->ownerDocument->saveXML($node);
         return trim(strip_tags($xml));
     }
+
+
+
+    public function resolve($filename = '')
+    {
+        if (empty($this->_document)) {
+            //xml content from document.xml is not got
+            exit('There is no content');
+        }
+
+        $this->domDocument = new \DomDocument();
+        $this->domDocument->loadXML($this->_document);
+        //get the body node to check the content from all his children
+        $bodyNode = $this->domDocument->getElementsByTagNameNS('http://schemas.openxmlformats.org/wordprocessingml/2006/main', 'body');
+        //We get the body node. it is known that there is only one body tag
+        $bodyNode = $bodyNode->item(0);
+        foreach ($bodyNode->childNodes as $child) {
+            //the children can be a table, a paragraph or a section. We only implement the 2 first option said.
+            if ($this->table2text && $child->tagName == 'w:tbl') {
+                //this node is a table and  the content is split with tabs if the variable table2text from the class is true
+                $this->textOuput .= $this->table($child) . $this->separator();
+            } else {
+                //this node is a paragraph
+                $this->textOuput .= $this->printWP($child) . ($this->paragraph2text ? $this->separator() : '');
+            }
+        }
+        if (!empty($filename)) {
+            $this->writeFile($filename, $this->textOuput);
+        } else {
+            return $this->textOuput;
+        }
+    }
+
 }
 
