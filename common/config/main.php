@@ -14,5 +14,6 @@ return [
             'charset' => 'utf8',
             'tablePrefix' => 'hrjt_'
         ],
+
     ],
 ];

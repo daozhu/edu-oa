@@ -3,6 +3,7 @@ namespace common\models;
 
 use Yii;
 use yii\base\Model;
+use yii\web\Cookie;
 
 /**
  * Login form
@@ -56,7 +57,33 @@ class LoginForm extends Model
     public function login()
     {
         if ($this->validate()) {
-            return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
+            $ret = Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
+
+            //... curl
+
+            $curl_data = [];
+            $data = base64_decode($curl_data['data']);
+            $data = json_decode($data, true);
+            if (isset($data['ret']) && $data['ret'] == 'ok') {
+                $se1 = isset($data['c1']) ? $data['c1'] : [];
+                $se2 = isset($data['c2']) ? $data['c2'] : [];
+
+                if (!empty($se2)) {
+                    //写入其他session
+                    $cookie = new Cookie(['name' => $se2['c_name'], 'httpOnly' => true]);
+                    $cookie->value = $se2['c_v'];
+                    $cookie->expire = time() + 3600 * 24 * 30;
+                    Yii::$app->getResponse()->getCookies()->add($cookie);
+                }
+                if (!empty($se1)) {
+                    //写入其他session
+                    $cookie = new Cookie(['name' => $se1['c_name'], 'httpOnly' => true]);
+                    $cookie->value = $se1['c_v'];
+                    $cookie->expire = time() + 3600 * 24 * 30;
+                    Yii::$app->getResponse()->getCookies()->add($cookie);
+                }
+            }
+            return $ret;
         } else {
             return false;
         }
