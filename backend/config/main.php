@@ -26,8 +26,8 @@ return [
             // this is the name of the session cookie used for login on the backend
             'name' => 'advanced-backend',
             'cookieParams' => array(
-                'path' => '/',
-                'domain' => '.xuyang.he',
+                'path' => $params['cookie_path'],
+                'domain' => $params['cookie_domain'],
             ),
         ],
         'log' => [
