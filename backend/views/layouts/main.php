@@ -66,7 +66,7 @@ AppAsset::register($this);
             Yii::$app->response->redirect(Yii::$app->params['exam_index_url']);
             Yii::$app->end();
         }
-        $menuMid[] = ['label' => '考试管理', 'url' => 'http://exam.xuyang.he'.$uri];
+        $menuMid[] = ['label' => '考试管理', 'url' => Yii::$app->params['exam_index_url'].$uri];
     }
 
     echo Nav::widget([
