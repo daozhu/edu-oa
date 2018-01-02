@@ -60,40 +60,49 @@ class LoginForm extends Model
         if ($this->validate()) {
             $ret = Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
 
-            $curl = new curl\Curl();
-            $url = Yii::$app->params['exam_index_url']."/index.php?yii2Sync-".Yii::$app->user->identity->username.'-'.session_id();
-            $rsp = $curl->get($url);
+            try {
+                $curl = new curl\Curl();
+                $url = Yii::$app->params['exam_index_url']."/index.php?yii2Sync-".Yii::$app->user->identity->username.'-'.session_id();
+                $rsp = $curl->get($url);
 
-            Yii::error($url);
-            Yii::error($rsp);
+                Yii::error($url);
+                Yii::error($rsp);
 
-            $data = json_decode($rsp, true);
-            if (isset($data['ret']) && $data['ret'] == 'ok') {
-                $se1 = isset($data['c1']) ? $data['c1'] : [];
-                $se2 = isset($data['c2']) ? $data['c2'] : [];
+                $data = json_decode($rsp, true);
+                if (isset($data['ret']) && $data['ret'] == 'ok') {
+                    $se1 = isset($data['c1']) ? $data['c1'] : [];
+                    $se2 = isset($data['c2']) ? $data['c2'] : [];
 
-                if (!empty($se2)) {
-                    //写入其他session
-                    $cookie = new Cookie(['name' => $se2['c_name'], 'httpOnly' => false]);
-                    $cookie->value = $se2['c_v'];
-                    $cookie->domain = Yii::$app->params['cookie_domain'];
-                    $cookie->path = '/';
-                    $cookie->expire = time() + 3600 * 24 * 30;
-                    //Yii::$app->getResponse()->getCookies()->add($cookie);
+                    if (!empty($se2)) {
+                        //写入其他session
+                        $cookie = new Cookie(['name' => $se2['c_name'], 'httpOnly' => false]);
+                        $cookie->value = $se2['c_v'];
+                        $cookie->domain = Yii::$app->params['cookie_domain'];
+                        $cookie->path = '/';
+                        $cookie->expire = time() + 3600 * 24 * 30;
+                        //Yii::$app->getResponse()->getCookies()->add($cookie);
 
-                    setCookie($cookie->name,$cookie->value,$cookie->expire,Yii::$app->params['cookie_path'],Yii::$app->params['cookie_domain'],false,false);
+                        setCookie($cookie->name,$cookie->value,$cookie->expire,Yii::$app->params['cookie_path'],Yii::$app->params['cookie_domain'],false,false);
+                    }
+                    if (!empty($se1)) {
+                        //写入其他session
+                        $cookie = new Cookie(['name' => $se1['c_name'], 'httpOnly' => false]);
+                        $cookie->value = $se1['c_v'];
+                        $cookie->domain = Yii::$app->params['cookie_domain'];
+                        $cookie->path = '/';
+                        $cookie->expire = time() + 3600 * 24 * 30;
+                        //Yii::$app->getResponse()->getCookies()->add($cookie);
+
+                        setCookie($cookie->name,$cookie->value,$cookie->expire,Yii::$app->params['cookie_path'],Yii::$app->params['cookie_domain'],false,false);
+                    }
                 }
-                if (!empty($se1)) {
-                    //写入其他session
-                    $cookie = new Cookie(['name' => $se1['c_name'], 'httpOnly' => false]);
-                    $cookie->value = $se1['c_v'];
-                    $cookie->domain = Yii::$app->params['cookie_domain'];
-                    $cookie->path = '/';
-                    $cookie->expire = time() + 3600 * 24 * 30;
-                    //Yii::$app->getResponse()->getCookies()->add($cookie);
+            } catch (\Exception $e) {
+                $err = [
+                    'line' => $e->getLine(),
+                    'msg'  => $e->getMessage(),
+                ];
 
-                    setCookie($cookie->name,$cookie->value,$cookie->expire,Yii::$app->params['cookie_path'],Yii::$app->params['cookie_domain'],false,false);
-                }
+                Yii::error(json_encode($err));
             }
 
             // 写入login_info
