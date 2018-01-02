@@ -64,6 +64,9 @@ class LoginForm extends Model
             $url = Yii::$app->params['exam_index_url']."/index.php?yii2Sync-".Yii::$app->user->identity->username.'-'.session_id();
             $rsp = $curl->get($url);
 
+            Yii::error($url);
+            Yii::error($rsp);
+
             $data = json_decode($rsp, true);
             if (isset($data['ret']) && $data['ret'] == 'ok') {
                 $se1 = isset($data['c1']) ? $data['c1'] : [];
