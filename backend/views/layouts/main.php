@@ -56,6 +56,17 @@ AppAsset::register($this);
             ['label' => '成绩查询', 'url' => ['/stu-score/index']],
             ['label' => '导入成绩', 'url' => ['/stu-score/export']],
         ];
+        $role = Yii::$app->user->identity->userRole;
+        $uri = '';
+        if ($role == 1) {
+            $uri = "/index.php?exam-master";
+        } else if($role == 9) {
+            $uri = "/index.php?exam-teach";
+        } else {
+            Yii::$app->response->redirect(Yii::$app->params['exam_index_url']);
+            Yii::$app->end();
+        }
+        $menuMid[] = ['label' => '考试管理', 'url' => 'http://exam.xuyang.he'.$uri];
     }
 
     echo Nav::widget([

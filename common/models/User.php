@@ -186,4 +186,17 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $this->password_reset_token = null;
     }
+
+
+    //user role
+    public function getUserRole($username = '')
+    {
+        if (empty($username)) $username = Yii::$app->user->identity->username;
+        $sql = "select * from hrjt_user where username = '".$username."'";
+        $ret = Yii::$app->db_exam->createCommand($sql)->queryOne();
+        if (!empty($ret)) {
+            return $ret['usergroupid'];
+        }
+        return 0;
+    }
 }

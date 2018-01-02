@@ -5,7 +5,6 @@ namespace backend\controllers;
 use Yii;
 use common\models\StuScore;
 use backend\models\StuScoreSearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
@@ -15,7 +14,7 @@ use yii\filters\AccessControl;
 /**
  * StuScoreController implements the CRUD actions for StuScore model.
  */
-class StuScoreController extends Controller
+class StuScoreController extends HrjtController
 {
     public function beforeAction($action)
     {

@@ -2,7 +2,6 @@
 namespace backend\controllers;
 
 use Yii;
-use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\models\LoginForm;
@@ -10,7 +9,7 @@ use common\models\LoginForm;
 /**
  * Site controller
  */
-class SiteController extends Controller
+class SiteController extends HrjtController
 {
 
     public function beforeAction($action)
@@ -89,10 +88,10 @@ class SiteController extends Controller
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-
-            //...
-
-            return $this->goBack();
+            //...统一会退到考试登录页面
+            $this->redirect(Yii::$app->params['exam_index_url']);
+            Yii::$app->end();
+            //return $this->goBack();
         } else {
             return $this->render('login', [
                 'model' => $model,
