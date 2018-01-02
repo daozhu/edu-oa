@@ -89,7 +89,14 @@ class SiteController extends HrjtController
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             //...统一会退到考试登录页面
-            $this->redirect(Yii::$app->params['exam_index_url']);
+            $role = Yii::$app->user->identity->userRole;
+            $uri = '';
+            if ($role == 1) {
+                $uri = "/index.php?exam-master";
+            } else if($role == 9) {
+                $uri = "/index.php?exam-teach";
+            }
+            $this->redirect(Yii::$app->params['exam_index_url'].$uri);
             Yii::$app->end();
             //return $this->goBack();
         } else {
