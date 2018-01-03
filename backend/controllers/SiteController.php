@@ -14,11 +14,12 @@ class SiteController extends HrjtController
 
     public function beforeAction($action)
     {
-        if ($action->id == 'sync') {
+        parent::beforeAction($action);
+
+        if (in_array($action->id,['sync','modify_user'])) {
             $action->controller->enableCsrfValidation = false;
         }
 
-        parent::beforeAction($action);
         return true;
     }
     /**
@@ -31,11 +32,11 @@ class SiteController extends HrjtController
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['login', 'error', 'sync'],
+                        'actions' => ['logout','login', 'error', 'sync'],
                         'allow' => true,
                     ],
                     [
-                        'actions' => ['logout', 'index'],
+                        'actions' => [ 'index'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -44,7 +45,7 @@ class SiteController extends HrjtController
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'logout' => ['post'],
+                    'logout' => ['post','get'],
                     'sync' => ['post'],
                 ],
             ],

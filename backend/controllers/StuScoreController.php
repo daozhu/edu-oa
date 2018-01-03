@@ -18,8 +18,8 @@ class StuScoreController extends HrjtController
 {
     public function beforeAction($action)
     {
-
         parent::beforeAction($action);
+
         return true;
     }
 
@@ -33,17 +33,14 @@ class StuScoreController extends HrjtController
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                //'only' => $this->actions(),
+                'only' => $this->actions(),
                 'rules' => [
                     [
-                        //'actions' => $this->actions(),
+                        'actions' => $this->actions(),
                         'allow' => true,
                         'roles' => ['@'],
                     ],
                 ],
-                //'denyCallback' => function($rule, $action){
-                //    throw new \Exception('您暂无权限查看此页面');
-                //}
             ],
             'verbs' => [
                 'class' => VerbFilter::className(),
