@@ -71,7 +71,7 @@ WapAsset::register($this);
         <p class="weui-footer-links">
             <a href="javascript:;" class="weui-footer-link">惠润阶梯英语学校</a>
         </p>
-        <p class="weui-footer__text">Copyright &copy; 2008-2016 Yoby移植</p>
+        <p class="weui-footer__text"></p>
     </div>
 -->
 <?php $this->endBody() ?>
