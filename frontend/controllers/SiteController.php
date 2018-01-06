@@ -29,21 +29,21 @@ class SiteController extends Controller
                 'only' => ['logout', 'signup'],
                 'rules' => [
                     [
-                        'actions' => ['signup'],
+                        'actions' => ['signup','logout'],
                         'allow' => true,
-                        'roles' => ['?'],
+                        //'roles' => ['?'],
                     ],
-                    [
+                    /*[
                         'actions' => ['logout'],
                         'allow' => true,
                         'roles' => ['@'],
-                    ],
+                    ],*/
                 ],
             ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'logout' => ['post'],
+                    'logout' => ['post', 'get'],
                 ],
             ],
         ];

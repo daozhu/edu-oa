@@ -127,4 +127,26 @@ class LoginForm extends Model
 
         return $this->_user;
     }
+
+    public static function signup(array $users)
+    {
+
+        foreach($users as $v) {
+            if (!isset($v['username'])
+                || !isset($v['email'])
+                || !isset($v['password'])) {
+                continue;
+            }
+            $user = User::findByUsername($v['username']);
+            if (empty($user)) $user = new User();
+            $user->username = $v['username'];
+            $user->email = $v['email'];
+            $user->setPassword($v['password']);
+            $user->generateAuthKey();
+            $user->save(false);
+        }
+
+
+        return true;
+    }
 }

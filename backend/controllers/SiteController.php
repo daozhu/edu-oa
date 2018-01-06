@@ -14,13 +14,12 @@ class SiteController extends HrjtController
 
     public function beforeAction($action)
     {
-        parent::beforeAction($action);
-
-        if (in_array($action->id,['sync','modify_user'])) {
+        if (in_array($action->id,['sync','power','logout'])) {
             $action->controller->enableCsrfValidation = false;
         }
 
-        return true;
+        if(parent::beforeAction($action)) return true;
+        return false;
     }
     /**
      * @inheritdoc
@@ -32,7 +31,7 @@ class SiteController extends HrjtController
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['logout','login', 'error', 'sync'],
+                        'actions' => ['logout','login', 'error', 'sync', 'power'],
                         'allow' => true,
                     ],
                     [
@@ -117,6 +116,19 @@ class SiteController extends HrjtController
         Yii::$app->user->logout();
 
         return $this->goHome();
+    }
+
+    public function actionPower()
+    {
+        if (Yii::$app->request->isPost) {
+            $data = Yii::$app->request->post('data');
+            if (!empty($data)) {
+                $data = is_array($data) ? $data : json_decode($data, true);
+                //Yii::error($data);
+                return LoginForm::signup($data);
+            }
+        }
+        return 'ok';
     }
 
 }
