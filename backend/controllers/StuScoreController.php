@@ -18,9 +18,9 @@ class StuScoreController extends HrjtController
 {
     public function beforeAction($action)
     {
-        parent::beforeAction($action);
+        if(parent::beforeAction($action)) return true;
 
-        return true;
+        return false;
     }
 
 
