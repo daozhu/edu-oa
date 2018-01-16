@@ -56,6 +56,7 @@ AppAsset::register($this);
             ['label' => '成绩查询', 'url' => ['/stu-score/index']],
             ['label' => '导入成绩', 'url' => ['/stu-score/export']],
         ];
+        // 多级菜单-高亮 params参数->数组放进所有的route
         $role = Yii::$app->user->identity->userRole;
         $uri = '';
         if ($role == 1) {
@@ -94,7 +95,7 @@ AppAsset::register($this);
     <div class="container">
         <p class="pull-left">&copy; 慧润阶梯英语学校 <?= date('Y') ?></p>
 
-        <p class="pull-right"><? "技术支持-桃花岛" ?></p>
+        <p class="pull-right"><?= "技术支持-桃花岛" ?></p>
     </div>
 </footer>
 
