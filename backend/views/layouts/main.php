@@ -56,6 +56,7 @@ AppAsset::register($this);
             ['label' => '成绩查询', 'url' => ['/stu-score/index']],
             ['label' => '导入成绩', 'url' => ['/stu-score/export']],
         ];
+        // 多级菜单-高亮 params参数->数组放进所有的route
         $role = Yii::$app->user->identity->userRole;
         $uri = '';
         if ($role == 1) {
