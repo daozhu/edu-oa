@@ -124,10 +124,13 @@ class StuScore extends \yii\db\ActiveRecord
                 if ($rowIndex == 1) {
                     $title = str_ireplace(['（', '）'], ['(', ')'], HtmlPurifier::process(trim($cell)));
                     $batch = explode('(', $title);
-                    if (!empty($batch) || !is_array($batch)) {
+                    if (!empty($batch) && is_array($batch)) {
                         $batch = trim($batch[1], ')');
+                        $batch = str_ireplace(['年', '月', '日','号', '.'], '', HtmlPurifier::process($batch));
                         if (empty($batch)) {
                             $batch = date('Ymd', time());
+                        } else {
+                            $batch = date('Ymd', strtotime($batch));
                         }
                     }
                     break;
@@ -266,6 +269,7 @@ class StuScore extends \yii\db\ActiveRecord
                 $tran->commit();
                 return ['code' => 200, 'msg' => "保存成功 : 共有". $ret.'条数据保存, 更新 :'.$j. "条" ];
             } else {
+                $tran->rollBack();
                 return ['code' => 500, 'msg' => "保存失败" ];
             }
         } catch (\Exception $e) {

@@ -99,10 +99,10 @@ class StuScoreSearch extends StuScore
                 'mobile' => HtmlPurifier::process($tel),
             ]);
         }
-        if (!empty($tel)) {
+        if (!empty($name)) {
             $query->andFilterWhere(['like', 'stu_name', HtmlPurifier::process($name),]);
         }
-        if (!empty($tel)) {
+        if (!empty($grade)) {
             $query->andFilterWhere(['like', 'grade', HtmlPurifier::process($grade),]);
         }
 
