@@ -88,7 +88,6 @@ class SiteController extends HrjtController
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            //...统一会退到考试登录页面
             $role = Yii::$app->user->identity->userRole;
             $uri = '';
             if ($role == 1) {
@@ -98,7 +97,6 @@ class SiteController extends HrjtController
             }
             $this->redirect(Yii::$app->params['exam_index_url'].$uri);
             Yii::$app->end();
-            //return $this->goBack();
         } else {
             return $this->render('login', [
                 'model' => $model,
@@ -124,7 +122,6 @@ class SiteController extends HrjtController
             $data = Yii::$app->request->post('data');
             if (!empty($data)) {
                 $data = is_array($data) ? $data : json_decode($data, true);
-                //Yii::error($data);
                 return LoginForm::signup($data);
             }
         }

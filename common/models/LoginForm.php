@@ -13,6 +13,7 @@ class LoginForm extends Model
 {
     public $username;
     public $password;
+    public $mobile;
     public $rememberMe = true;
 
     private $_user;
@@ -25,7 +26,8 @@ class LoginForm extends Model
     {
         return [
             // username and password are both required
-            ['username', 'required','message' => '用户名不能为空'],
+            //['username', 'required','message' => '用户名不能为空'],
+            ['mobile', 'required','message' => '手机号不能为空'],
             ['password', 'required', 'message' => '密码不能为空'],
             // rememberMe must be a boolean value
             ['rememberMe', 'boolean'],
@@ -46,7 +48,7 @@ class LoginForm extends Model
         if (!$this->hasErrors()) {
             $user = $this->getUser();
             if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Incorrect username or password.');
+                $this->addError($attribute, '输入的信息不准确,请核对后重新输入');
             }
         }
     }
@@ -65,10 +67,8 @@ class LoginForm extends Model
                 $curl = new curl\Curl();
                 $url = Yii::$app->params['exam_index_url']."/index.php?yii2Sync-".Yii::$app->user->identity->username.'-'.session_id();
                 $rsp = $curl->get($url);
-
                 Yii::error($url);
                 Yii::error($rsp);
-
                 $data = json_decode($rsp, true);
                 if (isset($data['ret']) && $data['ret'] == 'ok') {
                     $se1 = isset($data['c1']) ? $data['c1'] : [];
@@ -81,7 +81,6 @@ class LoginForm extends Model
                         $cookie->domain = Yii::$app->params['cookie_domain'];
                         $cookie->path = '/';
                         $cookie->expire = time() + 3600 * 24 * 30;
-                        //Yii::$app->getResponse()->getCookies()->add($cookie);
 
                         setCookie($cookie->name,$cookie->value,$cookie->expire,Yii::$app->params['cookie_path'],Yii::$app->params['cookie_domain'],false,false);
                     }
@@ -92,7 +91,6 @@ class LoginForm extends Model
                         $cookie->domain = Yii::$app->params['cookie_domain'];
                         $cookie->path = '/';
                         $cookie->expire = time() + 3600 * 24 * 30;
-                        //Yii::$app->getResponse()->getCookies()->add($cookie);
 
                         setCookie($cookie->name,$cookie->value,$cookie->expire,Yii::$app->params['cookie_path'],Yii::$app->params['cookie_domain'],false,false);
                     }
@@ -123,6 +121,9 @@ class LoginForm extends Model
     {
         if ($this->_user === null) {
             $this->_user = User::findByUsername($this->username);
+            if ($this->_user == null) {
+                $this->_user = User::findByMobile($this->mobile);
+            }
         }
 
         return $this->_user;
@@ -130,17 +131,16 @@ class LoginForm extends Model
 
     public static function signup(array $users)
     {
-
         foreach($users as $v) {
             if (!isset($v['username'])
-                || !isset($v['email'])
+                || !isset($v['mobile'])
                 || !isset($v['password'])) {
                 continue;
             }
-            $user = User::findByUsername($v['username']);
+            $user = User::findByMobile($v['mobile']);
             if (empty($user)) $user = new User();
             $user->username = $v['username'];
-            $user->email = $v['email'];
+            $user->mobile = $v['mobile'];
             $user->setPassword($v['password']);
             $user->generateAuthKey();
             $user->save(false);

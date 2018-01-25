@@ -16,8 +16,19 @@ use frontend\models\ContactForm;
 /**
  * Site controller
  */
-class SiteController extends Controller
+class SiteController extends HrjtController
 {
+
+    public function beforeAction($action)
+    {
+        if (in_array($action->id,['sync','power','logout'])) {
+            $action->controller->enableCsrfValidation = false;
+        }
+
+        if(parent::beforeAction($action)) return true;
+        return false;
+    }
+
     /**
      * @inheritdoc
      */
@@ -90,7 +101,15 @@ class SiteController extends Controller
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+            $role = Yii::$app->user->identity->userRole;
+            $uri = '';
+            if ($role == 1) {
+                $uri = "/index.php?exam-master";
+            } else if($role == 9) {
+                $uri = "/index.php?exam-teach";
+            }
+            $this->redirect(Yii::$app->params['exam_index_url'].$uri);
+            Yii::$app->end();
         } else {
             return $this->render('login', [
                 'model' => $model,
@@ -107,7 +126,7 @@ class SiteController extends Controller
     {
         Yii::$app->user->logout();
 
-        return $this->goHome();
+        return $this->redirect(['site/login']);
     }
 
     /**
@@ -153,10 +172,10 @@ class SiteController extends Controller
         $model = new SignupForm();
         if ($model->load(Yii::$app->request->post())) {
             if ($user = $model->signup()) {
-                if (Yii::$app->getUser()->login($user)) {
-                    return $this->goHome();
-                }
+                Yii::$app->response->redirect(['site/login']);
+                Yii::$app->end();
             }
+            $model->addError('mobile', '注册失败,请重新尝试');
         }
 
         return $this->render('signup', [

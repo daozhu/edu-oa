@@ -12,7 +12,7 @@ use yii\filters\VerbFilter;
 /**
  * StuScoreController implements the CRUD actions for StuScore model.
  */
-class StuScoreController extends Controller
+class StuScoreController extends HrjtController
 {
 
     public $enableCsrfValidation = false;

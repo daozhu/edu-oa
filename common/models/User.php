@@ -12,6 +12,7 @@ use yii\web\IdentityInterface;
  *
  * @property integer $id
  * @property string $username
+ * @property string $mobile
  * @property string $password_hash
  * @property string $password_reset_token
  * @property string $email
@@ -199,4 +200,16 @@ class User extends ActiveRecord implements IdentityInterface
         }
         return 0;
     }
+
+    /**
+     * Finds user by mobile
+     *
+     * @param string $mobile
+     * @return static|null
+     */
+    public static function findByMobile($mobile)
+    {
+        return static::findOne(['mobile' => $mobile, 'status' => self::STATUS_ACTIVE]);
+    }
+
 }
