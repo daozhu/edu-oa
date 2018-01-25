@@ -139,7 +139,7 @@ class LoginForm extends Model
             }
             $user = User::findByMobile($v['mobile']);
             if (empty($user)) $user = new User();
-            $user->username = $v['username'];
+            $user->username = urldecode($v['username']);
             $user->mobile = $v['mobile'];
             $user->setPassword($v['password']);
             $user->generateAuthKey();
