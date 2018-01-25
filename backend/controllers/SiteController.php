@@ -83,7 +83,19 @@ class SiteController extends HrjtController
     public function actionLogin()
     {
         if (!Yii::$app->user->isGuest) {
+            $role = Yii::$app->user->identity->userRole;
+            $uri = '';
+            if ($role == 1) {
+                $uri = "/index.php?exam-master";
+            } else if($role == 9) {
+                $uri = "/index.php?exam-teach";
+            }
+            $this->redirect(Yii::$app->params['exam_index_url'].$uri);
+            Yii::$app->end();
             return $this->goHome();
+        } else {
+            $this->redirect(Yii::$app->params['frontend_login_page']);
+            Yii::$app->end();
         }
 
         $model = new LoginForm();
