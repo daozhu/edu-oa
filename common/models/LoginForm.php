@@ -132,6 +132,13 @@ class LoginForm extends Model
     public static function signup(array $users)
     {
         foreach($users as $v) {
+
+            if (isset($v['del']) && $v['del'] == 1 && isset($v['mobile'])) {
+                $sql = "DELETE FROM `hrjt_user` WHERE mobile = ".$v['mobile'];
+                Yii::$app->db->createCommand($sql)->execute();
+                continue;
+            }
+
             if (!isset($v['username'])
                 || !isset($v['mobile'])
                 || !isset($v['password'])) {
