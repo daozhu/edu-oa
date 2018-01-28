@@ -95,6 +95,8 @@ class SiteController extends HrjtController
      */
     public function actionLogin()
     {
+        $this->layout = 'login';
+
         if (!Yii::$app->user->isGuest) {
             $role = Yii::$app->user->identity->userRole;
             $uri = '';
@@ -177,6 +179,7 @@ class SiteController extends HrjtController
      */
     public function actionSignup()
     {
+        $this->layout = 'login';
         $model = new SignupForm();
         if ($model->load(Yii::$app->request->post())) {
             if ($user = $model->signup()) {
