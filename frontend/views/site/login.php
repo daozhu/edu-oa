@@ -5,34 +5,40 @@
 /* @var $model \common\models\LoginForm */
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\bootstrap\ActiveForm;
 
-$this->title = '登录';
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = '欢迎访问';
+//$this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="site-login">
-    <h1><?= Html::encode($this->title) ?></h1>
 
 
-    <div class="row">
-        <div class="col-lg-5">
-            <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
 
+<div class="app-location">
+    <h2><?= Html::encode($this->title) ?></h2>
+    <div class="line"><span></span></div>
+    <div class="location"><img src="/imgs/0000.png" class="img-responsive" alt="" /></div>
 
-                <?= $form->field($model, 'mobile')->textInput(['autofocus' => true])->label('手机号') ?>
-                <?= $form->field($model, 'password')->passwordInput()->label('密码') ?>
+    <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
 
-                <?= $form->field($model, 'rememberMe')->checkbox()->label('记住我') ?>
+    <?= $form->field($model, 'mobile')->textInput([
+        'autofocus' => true,
+        'placeholder' => '手机号'
+    ])->label(false) ?>
+    <?= $form->field($model, 'password')->passwordInput([
+        'placeholder' => '密码'
+    ])->label(false) ?>
 
-                <div style="color:#999;margin:1em 0">
-                    <!--忘记密码 ? <?= Html::a('重置密码', ['site/request-password-reset']) ?>-->
-                </div>
-
-                <div class="form-group">
-                    <?= Html::submitButton('登录', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
-                </div>
-
-            <?php ActiveForm::end(); ?>
-        </div>
+    <div class="submit">
+        <input type="submit" onClick="myFunction()" value="登录" >
     </div>
+    <div class="clear"></div>
+    <div class="new">
+        <h3><a href="#"></a></h3>
+        <h4><a href="<?= Url::to(['site/signup']) ?>">没有账号? 注册</a></h4>
+        <div class="clear"></div>
+    </div>
+
+    <?php ActiveForm::end(); ?>
 </div>
+
