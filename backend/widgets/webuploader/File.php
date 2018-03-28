@@ -65,8 +65,8 @@ class File extends InputWidget
         ];
 
         $_pluginOptions = [
-            'uploadUrl'        => !empty(Yii::$app->params['uploadDefaultFileUrl']) ? Yii::$app->params['uploadDefaultFileUrl'] :  Url::to(['/file/upload-files']),
-            'uploadMaxSize'    => Yii::$app->params['filesUpload']['maxSize'],
+            'uploadUrl'     => '',
+            'uploadMaxSize' => '',
         ];
 
         $this->options = ArrayHelper::merge($_options, $this->options);
