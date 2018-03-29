@@ -16,7 +16,9 @@ if (!empty($flash)) {
     Alert::widget();
 }
 ?>
-
+<p>
+    <?= Html::a('课件列表', ['index'], ['class' => 'btn btn-success']) ?>
+</p>
 <div class="stu-score-create">
 
     <h1><?= Html::encode($this->title) ?></h1>

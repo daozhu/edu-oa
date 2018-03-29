@@ -42,14 +42,14 @@ class Office extends \yii\db\ActiveRecord
                 'class' => TimestampBehavior::className(),
                 'attributes' => [
                     \yii\db\ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
-                    \yii\db\ActiveRecord::EVENT_AFTER_UPDATE => ['updated_at'],
+                    \yii\db\ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
                 ],
             ],
             [
                 'class' => AttributeBehavior::className(),
                 'attributes' => [
-                    \yii\db\ActiveRecord::EVENT_BEFORE_INSERT => 'op_user',
-                    \yii\db\ActiveRecord::EVENT_BEFORE_UPDATE => 'op_user',
+                    \yii\db\ActiveRecord::EVENT_BEFORE_INSERT => ['op_user'],
+                    \yii\db\ActiveRecord::EVENT_BEFORE_UPDATE => ['op_user'],
                 ],
                 'value' => function ($event) {
                     return Yii::$app->user->identity->getId();
@@ -65,7 +65,7 @@ class Office extends \yii\db\ActiveRecord
     {
         return [
             [['op_user', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['created_at', 'updated_at'], 'required'],
+            //[['created_at', 'updated_at'], 'required'],
             [['file', 'name'], 'string', 'max' => 255],
             [['type'], 'string', 'max' => 15],
         ];
@@ -108,7 +108,7 @@ class Office extends \yii\db\ActiveRecord
             $model->name = $data['name'];
             if ($model->save()) {
                 $tran->commit();
-                return ['code' => 200, 'msg' => 'ok'];
+                return ['code' => 200, 'msg' => '上传成功'];
             }
             return ['code' => 500, 'msg' => json_encode($model->getErrors(), JSON_UNESCAPED_SLASHES)];
         } catch (\Exception $e) {
