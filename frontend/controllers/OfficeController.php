@@ -129,10 +129,10 @@ class OfficeController extends Controller
     {
         $id = Yii::$app->request->get('id', 0);
 
+        $model = Office::findOne($id);
         if (empty($id)
-            || $model = Office::findOne($id) == null
-                || empty($model->file)) {
-            return 0;
+            || empty($model->file)) {
+            return $id;
         }
         Yii::$app->response->sendFile($model->file);
     }
