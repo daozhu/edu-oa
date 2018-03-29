@@ -70,6 +70,8 @@ class OfficeSeach extends Office
             ->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'type', $this->type]);
 
+        $query->orderBy(['id' => SORT_DESC]);
+
         return $dataProvider;
     }
 }
