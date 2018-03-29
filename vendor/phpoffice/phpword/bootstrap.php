@@ -10,14 +10,14 @@
  * file that was distributed with this source code. For the full list of
  * contributors, visit https://github.com/PHPOffice/PHPWord/contributors. test bootstrap
  *
- * @link        https://github.com/PHPOffice/PHPWord
- * @copyright   2010-2016 PHPWord contributors
+ * @see         https://github.com/PHPOffice/PHPWord
+ * @copyright   2010-2017 PHPWord contributors
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
-$vendorDirPath = realpath(__DIR__ . '/../../autoload.php');
-if (file_exists($vendorDirPath)) {
-    require $vendorDirPath;
+$vendorDirPath = realpath(__DIR__ . '/vendor');
+if (file_exists($vendorDirPath . '/autoload.php')) {
+    require $vendorDirPath . '/autoload.php';
 } else {
     throw new Exception(
         sprintf(

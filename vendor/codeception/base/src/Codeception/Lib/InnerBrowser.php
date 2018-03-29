@@ -557,12 +557,12 @@ class InnerBrowser extends Module implements Web, PageSourceSaver, ElementLocato
 
     public function seeCurrentUrlMatches($uri)
     {
-        \PHPUnit_Framework_Assert::assertRegExp($uri, $this->_getCurrentUri());
+        \PHPUnit\Framework\Assert::assertRegExp($uri, $this->_getCurrentUri());
     }
 
     public function dontSeeCurrentUrlMatches($uri)
     {
-        \PHPUnit_Framework_Assert::assertNotRegExp($uri, $this->_getCurrentUri());
+        \PHPUnit\Framework\Assert::assertNotRegExp($uri, $this->_getCurrentUri());
     }
 
     public function grabFromCurrentUrl($uri = null)
@@ -1242,6 +1242,11 @@ class InnerBrowser extends Module implements Web, PageSourceSaver, ElementLocato
         $this->debugSection('Response', $this->getResponseStatusCode());
         $this->debugSection('Request Cookies', $this->getRunningClient()->getInternalRequest()->getCookies());
         $this->debugSection('Response Headers', $this->getRunningClient()->getInternalResponse()->getHeaders());
+    }
+
+    public function _getResponseStatusCode()
+    {
+        return $this->getResponseStatusCode();
     }
 
     protected function getResponseStatusCode()

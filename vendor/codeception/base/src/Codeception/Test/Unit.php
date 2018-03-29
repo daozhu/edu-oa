@@ -11,11 +11,12 @@ use Codeception\TestInterface;
 /**
  * Represents tests from PHPUnit compatible format.
  */
-class Unit extends \PHPUnit_Framework_TestCase implements
+class Unit extends \PHPUnit\Framework\TestCase implements
     Interfaces\Reported,
     Interfaces\Dependent,
     TestInterface
 {
+    use \Codeception\Test\Feature\Stub;
 
     /**
      * @var Metadata
