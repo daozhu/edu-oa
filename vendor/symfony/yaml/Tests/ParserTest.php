@@ -672,6 +672,42 @@ EOT;
         $this->assertSame($expected, $this->parser->parse($yaml));
     }
 
+    public function testNonStringFollowedByCommentEmbeddedInMapping()
+    {
+        $yaml = <<<'EOT'
+a:
+    b:
+        {}
+# comment
+    d:
+        1.1
+# another comment
+EOT;
+        $expected = array(
+            'a' => array(
+                'b' => array(),
+                'd' => 1.1,
+            ),
+        );
+
+        $this->assertSame($expected, $this->parser->parse($yaml));
+    }
+
+    public function testMultiLineStringLastResortParsing()
+    {
+        $yaml = <<<'EOT'
+test:
+  You can have things that don't look like strings here
+  true
+  yes you can
+EOT;
+        $expected = array(
+            'test' => 'You can have things that don\'t look like strings here true yes you can',
+        );
+
+        $this->assertSame($expected, $this->parser->parse($yaml));
+    }
+
     /**
      * @expectedException \Symfony\Component\Yaml\Exception\ParseException
      */
@@ -1601,6 +1637,10 @@ YAML
 - !foo [foo, bar]
 - !quz {foo: bar, quz: !bar {one: bar}}
 YAML
+            ),
+            'spaces-around-tag-value-in-sequence' => array(
+                array(new TaggedValue('foo', 'bar')),
+                '[ !foo bar ]',
             ),
         );
     }

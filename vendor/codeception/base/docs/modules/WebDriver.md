@@ -230,7 +230,6 @@ $this->getModule('WebDriver')->webDriver->getKeyboard()->sendKeys('hello, webdri
 ```
 
 
-
 ## Actions
 
 ### _backupSession
@@ -541,6 +540,19 @@ $I->checkOption('#agree');
 ```
 
  * `param` $option
+
+
+### clearField
+ 
+lears given field which isn't empty.
+
+`` php
+?php
+I->clearField('#username');
+>
+``
+
+param $field
 
 
 ### click
@@ -918,6 +930,25 @@ $I->dragAndDrop('#drag', '#drop');
  * `param string` $target (CSS ID or XPath)
 
 
+### executeAsyncJS
+ 
+Executes asynchronous JavaScript.
+A callback should be executed by JavaScript to exit from a script.
+Callback is passed as a last element in `arguments` array.
+Additional arguments can be passed as array in second parameter.
+
+```js
+// wait for 1200 milliseconds my running `setTimeout`
+* $I->executeAsyncJS('setTimeout(arguments[0], 1200)');
+
+$seconds = 1200; // or seconds are passed as argument
+$I->executeAsyncJS('setTimeout(arguments[1], arguments[0])', [$seconds]);
+```
+
+ * `param` $script
+ * `param array` $arguments
+
+
 ### executeInSelenium
  
 Low-level API method.
@@ -946,10 +977,14 @@ This example uses jQuery to get a value and assigns that value to a PHP variable
 ```php
 <?php
 $myVar = $I->executeJS('return $("#myField").val()');
-?>
+
+// additional arguments can be passed as array
+// Example shows `Hello World` alert:
+$I->executeJS("window.alert(arguments[0])", ['Hello world']);
 ```
 
  * `param` $script
+ * `param array` $arguments
 
 
 ### fillField
@@ -977,7 +1012,6 @@ Fails if element is not found.
 $I->grabAttributeFrom('#tooltip', 'title');
 ?>
 ```
-
 
  * `param` $cssOrXpath
  * `param` $attribute
@@ -2061,4 +2095,4 @@ $I->waitForText('foo', 30, '.title'); // secs
  * `param string` $selector optional
 @throws \Exception
 
-<p>&nbsp;</p><div class="alert alert-warning">Module reference is taken from the source code. <a href="https://github.com/Codeception/Codeception/tree/2.3/src/Codeception/Module/WebDriver.php">Help us to improve documentation. Edit module reference</a></div>
+<p>&nbsp;</p><div class="alert alert-warning">Module reference is taken from the source code. <a href="https://github.com/Codeception/Codeception/tree/2.4/src/Codeception/Module/WebDriver.php">Help us to improve documentation. Edit module reference</a></div>

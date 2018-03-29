@@ -51,9 +51,9 @@ if you run into problems loading dumps and cleaning databases.
              populate: true
              cleanup: true
              reconnect: true
-�             ssl_key: '/path/to/client-key.pem'
-�             ssl_cert: '/path/to/client-cert.pem'
-�             ssl_ca: '/path/to/ca-cert.pem'
+             ssl_key: '/path/to/client-key.pem'
+             ssl_cert: '/path/to/client-cert.pem'
+             ssl_ca: '/path/to/ca-cert.pem'
 
 ## SQL data dump
 
@@ -171,7 +171,6 @@ SELECT COUNT(*) FROM `users` WHERE `name` = 'Davert' AND `email` LIKE 'davert%'
 * driver - contains the Connection Driver
 
 
-
 ## Actions
 
 ### dontSeeInDatabase
@@ -231,7 +230,7 @@ Comparison expressions can be used as well:
 
 ```php
 <?php
-$post = $I->grabFromDatabase('posts', ['num_comments >=' => 100']);
+$post = $I->grabFromDatabase('posts', ['num_comments >=' => 100]);
 $user = $I->grabFromDatabase('users', ['email like' => 'miles%']);
 ```
 
@@ -294,7 +293,6 @@ $I->seeInDatabase('users', ['email like' => 'miles@davis.com']);
 
 Supported operators: `<`, `>`, `>=`, `<=`, `!=`, `like`.
 
-
  * `param string` $table
  * `param array` $criteria
 
@@ -328,4 +326,4 @@ $I->updateInDatabase('users', array('isAdmin' => true), array('email' => 'miles@
  * `param array` $data
  * `param array` $criteria
 
-<p>&nbsp;</p><div class="alert alert-warning">Module reference is taken from the source code. <a href="https://github.com/Codeception/Codeception/tree/2.3/src/Codeception/Module/Db.php">Help us to improve documentation. Edit module reference</a></div>
+<p>&nbsp;</p><div class="alert alert-warning">Module reference is taken from the source code. <a href="https://github.com/Codeception/Codeception/tree/2.4/src/Codeception/Module/Db.php">Help us to improve documentation. Edit module reference</a></div>
