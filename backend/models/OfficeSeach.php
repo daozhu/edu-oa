@@ -41,7 +41,7 @@ class OfficeSeach extends Office
      */
     public function search($params)
     {
-        $query = Office::find();
+        $query = Office::find()->where(['status' => 1]);
 
         // add conditions that should always apply here
 
@@ -69,6 +69,8 @@ class OfficeSeach extends Office
         $query->andFilterWhere(['like', 'file', $this->file])
             ->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'type', $this->type]);
+
+        $query->orderBy(['id' => SORT_DESC]);
 
         return $dataProvider;
     }

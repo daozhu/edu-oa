@@ -42,7 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class'  => 'yii\grid\ActionColumn',
                 'header' => '预览',
-                'template' => '{share}',
+                'template' => '{share} {delete}',
                 'buttons' => [
                     'share' => function ($url, $model, $key) {
                         $option = [
@@ -55,6 +55,9 @@ $this->params['breadcrumbs'][] = $this->title;
                         $url = Yii::$app->params['mffice'].$view_url;
 
                         return Html::a("预览", $url, $option);
+                    },
+                    'delete' => function($url, $model, $key) {
+                        return Html::a("删除", $url);
                     }
                 ],
             ],

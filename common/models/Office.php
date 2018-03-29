@@ -117,4 +117,24 @@ class Office extends \yii\db\ActiveRecord
             return ['code' => 500, 'msg' => $msg];
         }
     }
+
+    public function delete()
+    {
+        $transaction = static::getDb()->beginTransaction();
+        try {
+            $this->status = 0;
+            if($this->save()) {
+                $transaction->commit();
+                return true;
+            }
+            $transaction->rollBack();
+            return false;
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            throw $e;
+        } catch (\Throwable $e) {
+            $transaction->rollBack();
+            throw $e;
+        }
+    }
 }
