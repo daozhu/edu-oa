@@ -41,7 +41,7 @@ class OfficeSeach extends Office
      */
     public function search($params)
     {
-        $query = Office::find();
+        $query = Office::find()->where(['status' => 1]);
 
         // add conditions that should always apply here
 
