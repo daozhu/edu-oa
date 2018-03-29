@@ -33,7 +33,7 @@ class OfficeExport extends Model
             $this->real_path = Yii::$app->basePath
                 . $this->save_path
                 . date('YmdHis', time())
-                . $this->up_file->baseName
+                . md5($this->up_file->baseName)
                 . '.' . $this->up_file->extension;
             $this->up_file->saveAs($this->real_path);
             return true;
