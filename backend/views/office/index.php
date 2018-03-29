@@ -45,19 +45,26 @@ $this->params['breadcrumbs'][] = $this->title;
                 'template' => '{share} {delete}',
                 'buttons' => [
                     'share' => function ($url, $model, $key) {
+                        $url = $model->viewUrl;
+
                         $option = [
                             'title'     => '预览',
                             'data_plax' => 0,
-                            'target'    => '_blank',
+                            'data-url'  => $url,
+                            'class'     => 'btn btn-success show_file',
+                            //'onclick'   => 'show_file()',
+                            //'target'    => '_blank',
                         ];
-                        $view_url = !empty(Yii::$app->params['frontend_host']) ? Yii::$app->params['frontend_host'].'/office/view-online?id='.$model->id : '';
-                        $view_url = urlencode($view_url);
-                        $url = Yii::$app->params['mffice'].$view_url;
 
-                        return Html::a("预览", $url, $option);
+                        return Html::button("预览", $option);
+                        //return Html::a("预览", $url, $option);
                     },
                     'delete' => function($url, $model, $key) {
-                        return Html::a("删除", $url);
+                        $option = [
+                            'title'     => '删除',
+                            'class'     => 'btn btn-success show_file',
+                        ];
+                        return Html::a("删除", $url, $option);
                     }
                 ],
             ],
@@ -65,3 +72,27 @@ $this->params['breadcrumbs'][] = $this->title;
     ]); ?>
     <?php Pjax::end(); ?>
 </div>
+<script>
+    <? $this->beginBlock('JS_APPLAY'); ?>
+    $('.show_file').on('click', function(){
+        var da = $(this).data();
+        layer.open({
+            type: 2,
+            title: '预览',
+            closeBtn: 1,
+            shade: [0],
+            area: ['780px', '468px'],
+            offset: 'rb', //右下角弹出
+            time: 0,
+            anim: 2,
+            maxmin: true,
+            content: [da.url, 'yes'],
+            end: function(){
+            }
+        });
+    });
+    <?
+    $this->endBlock();
+    $this->registerJs($this->blocks['JS_APPLAY'], \yii\web\view::POS_END)
+    ?>
+</script> 
