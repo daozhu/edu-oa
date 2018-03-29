@@ -137,4 +137,17 @@ class Office extends \yii\db\ActiveRecord
             throw $e;
         }
     }
+
+    //..获取预览url
+    public function getViewUrl()
+    {
+        $view_url = !empty(Yii::$app->params['frontend_host']) ? Yii::$app->params['frontend_host'].'/office/view-online?id='.$this->id : '';
+        $view_url = urlencode($view_url);
+        $view_url .= "&wdStartOn=1&wdPrint=0&wdEmbedCode=0";
+
+        if (empty(Yii::$app->params['mffice'])) return null;
+
+        $url = Yii::$app->params['mffice'].$view_url;
+        return $url;
+    }
 }
