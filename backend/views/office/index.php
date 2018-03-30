@@ -76,12 +76,14 @@ $this->params['breadcrumbs'][] = $this->title;
     <? $this->beginBlock('JS_APPLAY'); ?>
     $('.show_file').on('click', function(){
         var da = $(this).data();
-        var index= layer.open({
+        var bw= ""+document.body.clientWidth+"px";
+        var bh= ""+(document.body.clientHeight)+"px";
+        layer.open({
             type: 2,
             title: '预览',
             closeBtn: 1,
             shade: [0],
-            area: ['780px', '468px'],
+            area: [bw,bh],
             offset: 'rb',
             time: 0,
             anim: 2,
@@ -93,8 +95,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 console.log(layero, index);
             }
         });
-
-        layer.full(index);
     });
     <?
     $this->endBlock();
