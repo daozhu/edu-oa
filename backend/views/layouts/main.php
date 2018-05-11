@@ -53,8 +53,8 @@ AppAsset::register($this);
     $menuMid = [];
     if (!Yii::$app->user->isGuest) {
         $menuMid = [
-            ['label' => '成绩查询', 'url' => ['/stu-score/index']],
-            ['label' => '导入成绩', 'url' => ['/stu-score/export']],
+            ['label' => '成绩查询', 'url' => ['/stu-score/index'],'active' => in_array(Yii::$app->controller->route,['stu-score/index','stu-score/export'])],
+            ['label' => '课件管理', 'url' => ['/office/index'],'active' => in_array(Yii::$app->controller->route,['office/index','office/export'])],
         ];
         // 多级菜单-高亮 params参数->数组放进所有的route
         $role = Yii::$app->user->identity->userRole;
@@ -68,6 +68,10 @@ AppAsset::register($this);
             Yii::$app->end();
         }
         $menuMid[] = ['label' => '考试管理', 'url' => Yii::$app->params['exam_index_url'].$uri];
+        if ($role == 1) {
+            $user = '/index.php?user-master';
+            $menuMid[] = ['label' => '用户管理', 'url' => Yii::$app->params['exam_index_url'].$user];
+        }
     }
 
     echo Nav::widget([
@@ -94,8 +98,6 @@ AppAsset::register($this);
 <footer class="footer">
     <div class="container">
         <p class="pull-left">&copy; 慧润阶梯英语学校 <?= date('Y') ?></p>
-
-        <p class="pull-right"><?= "技术支持-桃花岛" ?></p>
     </div>
 </footer>
 

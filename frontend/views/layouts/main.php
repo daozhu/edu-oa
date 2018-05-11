@@ -72,8 +72,6 @@ AppAsset::register($this);
 <footer class="footer">
     <div class="container">
         <p class="pull-left">&copy; 慧润阶梯英语学校 <?= date('Y') ?></p>
-
-        <p class="pull-right"><?= "技术支持-桃花岛" ?></p>
     </div>
 </footer>
 
