@@ -46,6 +46,12 @@ class QuestionHelper extends Helper
         }
 
         if (!$input->isInteractive()) {
+            if ($question instanceof ChoiceQuestion) {
+                $choices = $question->getChoices();
+
+                return $choices[$question->getDefault()];
+            }
+
             return $question->getDefault();
         }
 
@@ -255,7 +261,7 @@ class QuestionHelper extends Helper
 
                 foreach ($autocomplete as $value) {
                     // If typed characters match the beginning chunk of value (e.g. [AcmeDe]moBundle)
-                    if (0 === strpos($value, $ret) && $i !== strlen($value)) {
+                    if (0 === strpos($value, $ret)) {
                         $matches[$numMatches++] = $value;
                     }
                 }

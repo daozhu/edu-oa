@@ -648,7 +648,7 @@ class Crawler implements \Countable, \IteratorAggregate
                 }
             }
 
-            $data[] = $count > 1 ? $elements : $elements[0];
+            $data[] = 1 === $count ? $elements[0] : $elements;
         }
 
         return $data;
@@ -691,8 +691,8 @@ class Crawler implements \Countable, \IteratorAggregate
      */
     public function filter($selector)
     {
-        if (!class_exists('Symfony\\Component\\CssSelector\\CssSelectorConverter')) {
-            throw new \RuntimeException('Unable to filter with a CSS selector as the Symfony CssSelector 2.8+ is not installed (you can use filterXPath instead).');
+        if (!class_exists(CssSelectorConverter::class)) {
+            throw new \RuntimeException('To filter with a CSS selector, install the CssSelector component ("composer require symfony/css-selector"). Or use filterXpath instead.');
         }
 
         $converter = new CssSelectorConverter($this->isHtml);

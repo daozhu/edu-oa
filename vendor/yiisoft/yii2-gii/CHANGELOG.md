@@ -1,6 +1,16 @@
 Yii Framework 2 gii extension Change Log
 ========================================
 
+2.0.7 May 3, 2018
+-----------------
+
+- Bug #185: Fixed bug in Model generators when FKs pointing to non-existing tables (adipriyantobpn)
+- Bug #328: Fixed bug in CRUD update view generator (ricpelo)
+- Bug #333: Fixed incorrect validation rule for TINYINT column type (nostop8)
+- Bug #340: Fixed bug in CRUD SearchModel generator (JeanWolf)
+- Bug #351: Fixed incorrect validation rule for JSON column type (silverfire)
+
+
 2.0.6 December 23, 2017
 -----------------------
 

@@ -269,6 +269,9 @@ class Inline
 
             if (null !== $delimiters) {
                 $tmp = ltrim(substr($scalar, $i), ' ');
+                if ('' === $tmp) {
+                    throw new ParseException(sprintf('Unexpected end of line, expected one of "%s".', implode($delimiters)), self::$parsedLineNumber + 1, $scalar, self::$parsedFilename);
+                }
                 if (!in_array($tmp[0], $delimiters)) {
                     throw new ParseException(sprintf('Unexpected characters (%s).', substr($scalar, $i)), self::$parsedLineNumber + 1, $scalar, self::$parsedFilename);
                 }
@@ -286,6 +289,7 @@ class Inline
             } elseif (Parser::preg_match('/^(.*?)('.implode('|', $delimiters).')/', substr($scalar, $i), $match)) {
                 $output = $match[1];
                 $i += strlen($output);
+                $output = trim($output);
             } else {
                 throw new ParseException(sprintf('Malformed inline YAML string: %s.', $scalar), self::$parsedLineNumber + 1, null, self::$parsedFilename);
             }
