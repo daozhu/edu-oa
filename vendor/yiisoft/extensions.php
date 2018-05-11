@@ -21,15 +21,6 @@ return array (
       '@yii/debug' => $vendorDir . '/yiisoft/yii2-debug',
     ),
   ),
-  'linslin/yii2-curl' => 
-  array (
-    'name' => 'linslin/yii2-curl',
-    'version' => '1.0.11.0',
-    'alias' => 
-    array (
-      '@linslin/yii2/curl' => $vendorDir . '/linslin/yii2-curl',
-    ),
-  ),
   'yiisoft/yii2-bootstrap' => 
   array (
     'name' => 'yiisoft/yii2-bootstrap',
@@ -55,6 +46,15 @@ return array (
     'alias' => 
     array (
       '@yii/faker' => $vendorDir . '/yiisoft/yii2-faker',
+    ),
+  ),
+  'linslin/yii2-curl' => 
+  array (
+    'name' => 'linslin/yii2-curl',
+    'version' => '1.2.1.0',
+    'alias' => 
+    array (
+      '@linslin/yii2/curl' => $vendorDir . '/linslin/yii2-curl',
     ),
   ),
 );
