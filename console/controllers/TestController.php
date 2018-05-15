@@ -14,9 +14,10 @@ use \Yii;
 use yii\helpers\BaseConsole;
 
 use common\models\Docx2Txt;
-/*
- * console test
- * */
+/**
+ * 测试台
+ *
+ */
 class TestController extends Controller
 {
 
@@ -30,16 +31,40 @@ class TestController extends Controller
 
     public function beforeAction($action)
     {
-        $ret = "\r\n \r\n \r\n begin ... \r\n \r\n";
+        $ret = "      begin ...\r\n\r\n ";
         $this->stdout($ret, BaseConsole::FG_GREEN);
         return parent::beforeAction($action); //
     }
     public function afterAction($action, $result)
     {
-        $ret = "\r\n \r\n \r\n end ! \r\n \r\n";
+        $ret = "\r\n\r\n      end ! \r\n ";
         $this->stdout($ret, BaseConsole::FG_GREEN);
         return parent::afterAction($action, $result); //
     }
+
+    private function greenTip($tip)
+    {
+        $this->stdout($tip, BaseConsole::FG_GREEN);
+        echo "\r\n";
+    }
+    private function blueTip($tip)
+    {
+        $this->stdout($tip, BaseConsole::BG_BLUE);
+        echo "\r\n";
+    }
+
+    private function redTip($tip)
+    {
+        $this->stdout($tip, BaseConsole::BG_RED);
+        echo "\r\n";
+    }
+
+    private function yellowTip($tip)
+    {
+        $this->stdout($tip, BaseConsole::FG_YELLOW);
+        echo "\r\n";
+    }
+
 
     /*
      * read word
@@ -68,4 +93,27 @@ class TestController extends Controller
 
     }
 
+    /**
+     * 百度文档
+     */
+    public function actionBaidu()
+    {
+        $this->redTip(" baidu doc ....");
+        $config = [
+            'ak' => 'c2a4167a495e4636b454d73533130523',
+            'sk' => "3bfd1bfad60048908f7dc4e712d04c0c",
+        ];
+
+        $date_str = date(DATE_ATOM,time());
+        //$this->greenTip($date_str);
+        //$this->yellowTip(strpos($date_str,'+'));
+        $date_str = substr(date(DATE_ATOM,time()),0,strpos($date_str,"+"));
+        $this->redTip($date_str."Z");
+
+
+
+        //$model = new \common\models\BaiDuDoc($config);
+
+
+    }
 }
