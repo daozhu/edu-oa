@@ -12,6 +12,7 @@ use Codeception\Subscriber\Console;
 use yii\console\Controller;
 use \Yii;
 use yii\helpers\BaseConsole;
+use yii\helpers\ArrayHelper;
 
 use common\models\Docx2Txt;
 /**
@@ -98,22 +99,95 @@ class TestController extends Controller
      */
     public function actionBaidu()
     {
-        $this->redTip(" baidu doc ....");
+        date_default_timezone_set('UTC');
+        $dos_config = [
+            'ak' => 'c2a4167a495e4636b454d73533130523',
+            'sk' => "3bfd1bfad60048908f7dc4e712d04c0c",
+        ];
+        $bos_config = [
+            'credentials' => array(
+                'accessKeyId'     => 'c2a4167a495e4636b454d73533130523',
+                'secretAccessKey' => '3bfd1bfad60048908f7dc4e712d04c0c',
+            )
+        ];
+
+        $model = new \common\models\BaiDuDoc($dos_config);
+
+        $data = [
+            'title' => 'myfirstdoc',
+            'format' => 'docx',
+        ];
+        //$ret = $model->register($data);
+
+        /*
+         *
+         *  [documentId] => doc-iegrqase8ukmfdn
+            [bucket] => bktmid8dgurf4z4pz74a
+            [object] => upload/doc-iegrqase8ukmfdn.doc
+            [bosEndpoint] => http://bj.bcebos.com
+         *
+         * */
+
+
+        //$ret = $model->status("status=PUBLISHED");
+        //print_r(ArrayHelper::toArray(json_decode($ret)));
+        //return;
+
+        $query = "source=bos";
+        $data = [
+            //'source' => 'bos',
+            'bucket' => 'office',//
+            'object' => 'test/doc-iegrqase8ukmfdn.doc',
+            'title'  => 'testttttttting2',
+            'format' => 'doc'
+        ];
+        //$ret = $model->source($query, $data);
+
+        $data = [
+            'documentId' => 'doc-iegrqase8ukmfdn',
+        ];
+        //$ret = $model->publish($data, $data['documentId']);
+
+
+        $uri = 'doc-iegrqase8ukmfdn';
+        $query = "https=false";
+        $data = [
+            'documentId' => $uri,
+            'https' => false
+        ];
+        $ret = $model->search($data, $uri);
+
+        var_dump($model->getCanonicalRequest());
+
+        var_dump($ret);
+        print_r(ArrayHelper::toArray(json_decode($ret)));
+    }
+    /**
+     * 对象存储
+     */
+    public function actionBos()
+    {
         $config = [
             'ak' => 'c2a4167a495e4636b454d73533130523',
             'sk' => "3bfd1bfad60048908f7dc4e712d04c0c",
         ];
+        $config = [
+            'credentials' => array(
+                'accessKeyId' => 'c2a4167a495e4636b454d73533130523',
+                'secretAccessKey' => '3bfd1bfad60048908f7dc4e712d04c0c',
 
-        $date_str = date(DATE_ATOM,time());
-        //$this->greenTip($date_str);
-        //$this->yellowTip(strpos($date_str,'+'));
-        $date_str = substr(date(DATE_ATOM,time()),0,strpos($date_str,"+"));
-        $this->redTip($date_str."Z");
+            ),
+        ];
+        $bucket = "bktmid8dgurf4z4pz74a";
+        $obj_key = "upload/doc-iegrqase8ukmfdn.doc";
 
+        $file_path = dirname(Yii::$app->basePath)."/backend/upload/office/操作文档.docx";
+        $this->redTip($file_path);
 
+        $model = new \common\models\BaiBosClient($config);
+        $ret   = $model->upload($bucket, $obj_key, $file_path);
 
-        //$model = new \common\models\BaiDuDoc($config);
-
+        print_r(($ret));
 
     }
 }
