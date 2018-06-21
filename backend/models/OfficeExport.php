@@ -22,8 +22,7 @@ class OfficeExport extends Model
     {
         return [
             //[['up_file'], 'file', 'skipOnEmpty' => false, 'extensions' => 'xls, xlsx'],
-            //[['up_file'], 'file', 'skipOnEmpty' => false, 'extensions' => 'xls, xlsx'],
-            [['up_file'], 'file', 'skipOnEmpty' => false],
+            [['up_file'], 'file', 'skipOnEmpty' => false, 'extensions' => 'xls, xlsx,doc,docx,ppt, pptx,pdf'],
         ];
     }
 

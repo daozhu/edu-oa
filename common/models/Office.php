@@ -6,6 +6,7 @@ use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\behaviors\AttributeBehavior;
 use linslin\yii2\curl;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "{{%office}}".
@@ -23,9 +24,12 @@ class Office extends \yii\db\ActiveRecord
 {
     // docx = doc  pptx=ppt
     public static $type = [
-        'doc' => 'doc',
+        'doc'  => 'doc',
+        'docx' => 'docx',
         'ppt' => 'ppt',
+        'pptx' => 'pptx',
         'xls' => 'xls',
+        'xlsx' => 'xlsx',
         'pdf' => 'pdf',
     ];
     // docx = doc  pptx=ppt
@@ -37,6 +41,9 @@ class Office extends \yii\db\ActiveRecord
     const BAIDU_DOC_HOST = "doc.bj.baidubce.com";
     const BAIDU_DOC_INFO_URI = "/v2/document/";
 
+
+    private $share_data = '';
+    private $doc_id = '';
 
     /**
      * @inheritdoc
@@ -121,7 +128,7 @@ class Office extends \yii\db\ActiveRecord
             $model->sys  = 1;
             if ($model->save()) {
                 $tran->commit();
-                return ['code' => 200, 'msg' => '上传成功'];
+                return ['code' => 200, 'msg' => '上传成功', 'last_id' => $model->id];
             }
             $tran->rollBack();
             return ['code' => 500, 'msg' => json_encode($model->getErrors(), JSON_UNESCAPED_SLASHES)];
@@ -155,27 +162,7 @@ class Office extends \yii\db\ActiveRecord
     //..获取预览url
     public function getViewUrl()
     {
-        $view_url = !empty(Yii::$app->params['frontend_host']) ? Yii::$app->params['frontend_host'].'/office/view-online?id='.$this->id : '';
-        $view_url = urlencode($view_url);
-        $view_url .= "&wdStartOn=1&wdPrint=0&wdEmbedCode=0";
-
-        if (empty(Yii::$app->params['mffice'])) return null;
-
-        $url = Yii::$app->params['mffice'].$view_url;
-        return $url;
-    }
-
-    public function getCurl()
-    {
-        $curl  = new curl\Curl();
-        $headers = [
-            'host'              => '',
-            'x-bce-date'        => '',
-            'x-bce-request-id'  => '',
-            'authorization'     => '',
-            'content-type'      => '',
-            'content-length'    => '',
-        ];
+        return !empty(Yii::$app->params['frontend_host']) ? Yii::$app->params['frontend_host'].'/office/view-online?id='.$this->id : '';
     }
 
     //url
@@ -185,6 +172,167 @@ class Office extends \yii\db\ActiveRecord
 
         $url   = self::BAIDU_DOC_HOST.self::BAIDU_DOC_INFO_URI.$this->file;
 
+    }
 
+    // 发布文档
+    public static function pub_doc($file_id)
+    {
+        try{
+            $err = [];
+            $office  = self::findOne(['id' => $file_id]);
+            if (empty($office)) {
+                $err[] = "文档不存在";
+                return [
+                    'err'       => $err,
+                    'status'    => '',
+                    'doc_id'    => '',
+                    'oper_data' => [],
+                ];
+            }
+
+            $status = BaiDuDoc::$doc_status_arr[0];
+            $oper_arr = [
+                'dos' => [],
+                'bos' => [],
+            ];
+
+            $config = [
+                'ak' => Yii::$app->params['baidu_ak'],
+                'sk' => Yii::$app->params['baidu_sk'],
+            ];
+            $dos = new BaiDuDoc($config);
+            $register = [
+                'title'  => $office->name,
+                'format' => $office->type
+            ];
+            $register_ret = $dos->register($register);
+            $register_ret = ArrayHelper::toArray(json_decode($register_ret));
+            $oper_arr['dos'][] = $register_ret;
+
+            $doc_id = '';
+            if (!empty($register_ret['documentId'])) {
+                $status = BaiDuDoc::$doc_status_arr[1];
+                $doc_id = $register_ret['documentId'];
+                $bos_conf = [
+                    'bucket'     => $register_ret['bucket'],
+                    'object'     => $register_ret['object'],
+                    'file_path'  => $office->file,
+                ];
+                $bos_ret = $dos->upBos($bos_conf);
+                $bos_ret = ArrayHelper::toArray(($bos_ret));
+                $oper_arr['bos'][] = $bos_ret;
+            } else {
+                $err[] = "注册失败";
+            }
+
+            if (!empty($doc_id)) {
+                $pub_ret = $dos->publish($doc_id);
+                $pub_ret = ArrayHelper::toArray(json_decode($pub_ret));
+                $oper_arr['dos'][] = $pub_ret;
+
+                if (!empty($pub_ret['documentId'])) {
+                    if ($pub_ret['status'] == "FAILED") {
+                        $status = BaiDuDoc::$doc_status_arr[3];
+                        $err[]  = json_encode($pub_ret['error']);
+                    } else {
+                        $status = BaiDuDoc::$doc_status_arr[2];
+                    }
+                }
+            }
+
+            return [
+                'err'       => $err,
+                'status'    => $status,
+                'doc_id'    => $doc_id,
+                'oper_data' => $oper_arr,
+            ];
+        } catch (\Exception $e){
+            return [
+                'err'       => [$e->getMessage()],
+                'status'    => $e->getLine(),
+                'doc_id'    => '',
+                'oper_data' => [],
+            ];
+        }
+    }
+
+    public static function share($file_id, $share_flag = true)
+    {
+        $share = (new \yii\db\Query())->from('hrjt_office_share')->where(['file_id' => $file_id])->one();
+
+        $trans = Yii::$app->db->beginTransaction();
+        try {
+            if (empty($share)) {
+                $pub_data = self::pub_doc($file_id);
+                if (isset($pub_data['err']) && empty(array_filter($pub_data['err']))) {
+                    $insert_column = ['file_id', 'op_user', 'status', 'doc_id', 'doc_status', 'doc_status_msg', 'created_at', 'updated_at', 'encrypt'];
+                    $insert_data[] = [$file_id, Yii::$app->user->id,intval($share_flag), $pub_data['doc_id'], $pub_data['status'], json_encode($pub_data['oper_data'],JSON_UNESCAPED_UNICODE), time(), time(),self::getShareCode()];
+                    $ret = Yii::$app->db->createCommand()->batchInsert('hrjt_office_share', $insert_column, $insert_data)->execute();
+                } else {
+                    $trans->rollBack();
+                    return ['code' => 500, 'msg' =>  "操作失败-->" .json_encode($pub_data, JSON_UNESCAPED_UNICODE)];
+                }
+            } else {
+                Yii::$app->db->createCommand()->update('hrjt_office_share', ['status' => intval($share_flag),'updated_at' => time()], [
+                    'file_id' => $file_id
+                ])->execute();
+            }
+
+            $trans->commit();
+            return ['code' => 200, 'msg' => '操作成功'];
+        } catch (\Exception $e){
+            $trans->rollBack();
+            $err = $e->getMessage();
+            return ['code' => 500, 'msg' => "操作失败-->" .json_encode(['line'=> $e->getLine(),'msg' => $e->getMessage()]). "-->". $file_id];
+        }
+    }
+
+    //..获取预览url
+    public function getShare()
+    {
+        if (!empty($this->share_data)) {
+            return $this->share_data;
+        }
+
+        return $this->share_data = (new \yii\db\Query())->from('hrjt_office_share')->where(['file_id' => $this->id])->one();
+    }
+
+    public function getDocId()
+    {
+        if (!empty($this->doc_id)) {
+            return $this->doc_id;
+        }
+
+        $share = $this->getShare();
+        return $this->doc_id = isset($share['doc_id'])?$share['doc_id'] : '';
+    }
+
+    public static function toggleShare($file_id)
+    {
+        $share = (new \yii\db\Query())->from('hrjt_office_share')->where(['file_id' => $file_id])->one();
+        $flag = false;
+        if (!isset($share['status']) || $share['status'] != 1) {
+            $flag = true;
+        }
+        return self::share($file_id, $flag);
+    }
+
+    public function BaiDuDocStats()
+    {
+        $config = [
+            'ak' => Yii::$app->params['baidu_ak'],
+            'sk' => Yii::$app->params['baidu_sk'],
+        ];
+        $dos = new BaiDuDoc($config);
+
+        $status = $dos->search($this->docId);
+
+        //return $this->docId;
+        return $status;
+    }
+
+    public static function getShareCode()
+    {
+        return mt_rand(10000,99999);
     }
 }

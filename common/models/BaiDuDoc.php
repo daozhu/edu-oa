@@ -54,7 +54,7 @@ class BaiDuDoc
     }
 
     //发布
-    public function publish($data,$doc_id = '')
+    public function publish($doc_id)
     {
         $this->method = "PUT";
         $this->uri = self::BAIDU_DOC_INFO_URI."/{$doc_id}"."?";
@@ -73,16 +73,27 @@ class BaiDuDoc
         $header['authorization']  = $this->getSign();
 
         $this->url = self::BAIDU_DOC_HOST.$this->uri.$this->queryString;
-        return $this->_put($this->url,$data,$header);
+        return $this->_put($this->url,['documentId' => $doc_id],$header);
     }
 
+    //上传bos
+    public function upBos($param)
+    {
+        $config = [
+            'credentials' => array(
+                'accessKeyId'     => $this->ak,
+                'secretAccessKey' => $this->sk,
+            ),
+        ];
+        return (new BaiBosClient($config))->upload($param['bucket'], $param['object'],$param['file_path']);
+    }
 
     //注册
-    public function register($data = [], $querystr = '')
+    public function register($data)
     {
         $this->method = "POST";
         $this->uri = self::BAIDU_DOC_INFO_URI."?";
-        $this->queryString = 'register'. $querystr;
+        $this->queryString = 'register';
         $this->header = [
             'host: '.self::BAIDU_DOC_HOST,
             "x-bce-date: ".$this->getTime(),
@@ -101,11 +112,11 @@ class BaiDuDoc
     }
 
     // 从 BOS 导入
-    public function source($query = '', $data = [])
+    public function source($data)
     {
         $this->method = "POST";
         $this->uri = self::BAIDU_DOC_INFO_URI."?";
-        $this->queryString = $query;
+        $this->queryString = "source=bos";
         $this->header = [
             'host: '.self::BAIDU_DOC_HOST,
             "x-bce-date: ".$this->getTime(),
@@ -125,20 +136,14 @@ class BaiDuDoc
     }
 
     //列表
-    public function search($data, $doc_id = '')
+    public function search($doc_id)
     {
         $this->method = "GET";
         $this->uri = self::BAIDU_DOC_INFO_URI."/{$doc_id}";
         $this->queryString = '';
         $this->header = [
             'host: '.self::BAIDU_DOC_HOST,
-            //'x-bce-date: '.$this->date,
-            //'content-type: application/json',
-            //'x-bce-request-id'  => '',
-            //'authorization'     => $this->sign,
-            //'content-length'    => '',
         ];
-
         $header = [
             'host' => self::BAIDU_DOC_HOST,
         ];
@@ -150,16 +155,13 @@ class BaiDuDoc
     }
 
     //列表
-    public function status($query = '')
+    public function status($query = 'status=PUBLISHED')
     {
-
         $this->method = "GET";
         $this->uri = self::BAIDU_DOC_INFO_URI."/"."?";
         $this->queryString = $query;
         $this->header = [
             'host: '.self::BAIDU_DOC_HOST,
-            //'x-bce-date: '.$this->date,
-            //'content-type: application/json',
         ];
 
         $header = [
@@ -174,17 +176,17 @@ class BaiDuDoc
 
     public function getSign()
     {
-        //if (!empty($this->sign)) return $this->sign;
+        $this->sign = '';
 
         if (!empty($this->getSignature())) {
-            $this->sign = $this->getAuthStrPrefix()."/".$this->getSignHeader()."/".$this->getSignature();
+             $this->sign = $this->getAuthStrPrefix()."/".$this->getSignHeader()."/".$this->getSignature();
         }
         return $this->sign;
     }
 
     public function getSignature()
     {
-        //if (!empty($this->signature)) return $this->signature;
+        $this->signature = '';
 
         if (!empty($this->ak) && !empty($this->sk)) {
             $this->signature = hash_hmac('sha256', $this->getCanonicalRequest(),$this->getSigningKey());
@@ -194,7 +196,7 @@ class BaiDuDoc
 
     public function getCanonicalRequest()
     {
-        //if (!empty($this->canonicalRequest)) return $this->canonicalRequest;
+        $this->canonicalRequest = '';
 
         if (!empty($this->method)) {
             $arr = [
@@ -210,7 +212,7 @@ class BaiDuDoc
 
     public function getSigningKey()
     {
-        //if (!empty($this->signingKey)) return $this->signingKey;
+        $this->signingKey = '';
 
         if (!empty($this->getAuthStrPrefix()) && !empty($this->sk)) {
             $this->signingKey = hash_hmac('sha256',$this->getAuthStrPrefix(), $this->sk);
@@ -220,22 +222,22 @@ class BaiDuDoc
 
     public function getAuthStrPrefix()
     {
-        //if (!empty($this->authStrPrefix)) return $this->authStrPrefix;
+        $this->authStrPrefix = '';
 
         if (!empty($this->ak) && !empty($this->sk)) {
-            $this->authStrPrefix = $this->auth_v."/".$this->ak."/".$this->date."/".$this->expire;
+            $this->authStrPrefix = $this->auth_v."/".$this->ak."/".$this->getTime()."/".$this->expire;
         }
         return $this->authStrPrefix;
     }
 
     public function getCanonicalHeaders()
     {
-        //if (!empty($this->canonicalHeaders)) return $this->canonicalHeaders;
+        $this->canonicalHeaders = '';
 
         if (!empty($this->header)) {
             $encode_arr = [];
             foreach($this->header as $v) {
-                list($str_1,$str_2) = explode(":", $v, 2);
+                list($str_1,$str_2) = stripos($v, ':') !== false ? explode(":", $v, 2) : [$v, ''];
                 $str_k = $this->urlEncode(strtolower(trim($str_1)));
                 $str_v = !empty($str_2) ? $this->urlEncode(trim($str_2)) : '';
                 if (!empty($str_v)) {
@@ -250,18 +252,19 @@ class BaiDuDoc
 
     public function getCanonicalQueryString()
     {
-        //if (!empty($this->canonicalQueryString)) return $this->canonicalQueryString;
+        $this->canonicalQueryString = '';
 
         if (!empty($this->queryString)) {
             $str = explode("&", $this->queryString);
             $encode_arr = [];
             foreach($str as $v) {
-                list($str_1,$str_2) = explode("=", $v, 2);
+                list($str_1,$str_2) = stripos($v, '=') !== false ? explode("=", $v, 2) : [$v, ''];
                 $str_k = $this->urlEncode(trim($str_1));
                 $str_v = !empty($str_2) ? $this->urlEncode(trim($str_2)) : '';
 
                 $encode_arr[] = trim($str_k."=".$str_v);
             }
+
             sort($encode_arr);
             $this->canonicalQueryString = implode("&", $encode_arr);
         }
@@ -270,10 +273,10 @@ class BaiDuDoc
 
     public function getCanonicalURI()
     {
-        //if (!empty($this->canonicalURI)) return $this->canonicalURI;
+        $this->canonicalURI = '';
 
         if (!empty($this->uri)) {
-            list($uri,$query_str) = explode("?", $this->uri, 2);
+            list($uri,$query_str) = stripos($this->uri, '?') !== false ? explode("?", $this->uri, 2) : [$this->uri,''];
             $this->canonicalURI   = $this->urlEncodeExceptSlash($uri);
         } else {
             $this->canonicalURI = "/";
@@ -283,12 +286,12 @@ class BaiDuDoc
 
     public function getSignHeader()
     {
-        //if (!empty($this->signHeader)) return $this->signHeader;
+        $this->signHeader = '';
 
         if (!empty($this->header) && is_array($this->header)) {
             $tem = [];
             foreach($this->header as $v) {
-                list($ht, $ht_2)= explode(":", $v, 2);
+                list($ht, $ht_2)= stripos($v,':') !== false ? explode(":", $v, 2) : [$v,''];
                 $tem[] = $ht;
             }
             sort($tem);
@@ -299,7 +302,6 @@ class BaiDuDoc
 
     public function getTime()
     {
-        //if (!empty($this->date)) return $this->date;
         return $this->date = date('Y-m-d\TH:i:s\Z');
     }
 
@@ -362,7 +364,6 @@ class BaiDuDoc
         $ret = $curl_obj->put($url);
         return $ret;
     }
-
 
     private function _post($url, array $post_data = array(), array $headers = array())
     {

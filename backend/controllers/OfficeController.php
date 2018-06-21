@@ -9,6 +9,8 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
 use backend\models\OfficeExport;
+use common\models\BaiDuDoc;
+
 /**
  * OfficeController implements the CRUD actions for Office model.
  */
@@ -132,6 +134,7 @@ class OfficeController extends HrjtController
         $model = new OfficeExport();
         $ret = '';
         if (Yii::$app->request->isPost) {
+
             $model->up_file = UploadedFile::getInstance($model, 'up_file');
             if ($model->upload()) {
                 // 文件上传成功
@@ -143,7 +146,13 @@ class OfficeController extends HrjtController
                     ],
                 ]);
                 if ($ret['code'] == 200) {
-                    Yii::$app->getSession()->setFlash('success', $ret['msg']);
+                    //发布 上传的发布的参数控制
+                    $pub_ret = Office::share($ret['last_id']);
+                    if ($pub_ret['code'] != 200) {
+                        Yii::$app->getSession()->setFlash('warning', $pub_ret['msg']);
+                    } else {
+                        Yii::$app->getSession()->setFlash('success', $ret['msg']);
+                    }
                 } else {
                     Yii::$app->getSession()->setFlash('warning', $ret['msg']);
                 }
@@ -153,23 +162,17 @@ class OfficeController extends HrjtController
         return $this->render('export', ['model' => $model, 'ret' => $ret]);
     }
 
-
-    public function actionInBaiduId()
+    public function actionCancel($id)
     {
-        $this->layout = 'layer';
+        $pub_ret = Office::toggleShare($id);
 
-        $model = new Office();
-
-        if ($model->load(Yii::$app->request->post())) {
-            $model->sys = 1;
-            //获取百度的文件的name
-            $model->save();
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($pub_ret['code'] != 200) {
+            Yii::$app->getSession()->setFlash('warning', $pub_ret['msg']);
+        } else {
+            Yii::$app->getSession()->setFlash('success', $pub_ret['msg']);
         }
 
-        return $this->render('in_baidu_id', [
-            'model' => $model,
-        ]);
+        $this->redirect(['index']);
+        Yii::$app->end();
     }
-
 }

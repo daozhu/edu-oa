@@ -1,9 +1,24 @@
 <?php
-
-use yii\helpers\Html;
-
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = $this->title;
+
+$staus = 1;
+
+$stat = $model->BaiDuDocStats();
+$stat = json_decode($stat, true);
+if (!isset($stat['status']) || $stat['status'] != "PUBLISHED") {
+    $staus = 0;
+}
+
+$share = $model->share;
+if (!isset($share['status']) || $share['status'] != 1){
+    $staus = 2;
+}
+
+if (!isset($_GET['code']) || !isset($share['encrypt']) || $share['encrypt'] != $_GET['code']){
+    $staus = 2;
+}
+
 ?>
 <div class="office-view">
 
@@ -13,11 +28,12 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 
+    <?php if ($staus == 1) { ?>
     <script src="http://static.bcedocument.com/reader/v2/doc_reader_v2.js"></script>
     <script type="text/javascript">
         (function () {
             var option = {
-                docId: "<?= $model->file ?>",
+                docId: "<?= $model->docId ?>",
                 token: "TOKEN",
                 host: "BCEDOC",
                 width: 800, // 文档容器宽度
@@ -42,4 +58,17 @@ $this->params['breadcrumbs'][] = $this->title;
             new Document("reader", option);
         })();
     </script>
+    <?php } else if (0 == $staus) {?>
+        <div class="text-center">
+            <div class="center-block">
+                <h3>正在发布处理中。。。请稍后刷新重试</h3>
+            </div>
+        </div>
+    <?php } else if ($staus == 2) {?>
+        <div class="text-center">
+            <div class="center-block">
+                <h3>您要查看的文件不存在</h3>
+            </div>
+        </div>
+    <?php } ?>
 </div>

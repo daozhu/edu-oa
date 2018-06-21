@@ -7,7 +7,7 @@ use yii\bootstrap\Alert;
 /* @var $this yii\web\View */
 /* @var $model common\models\StuScore */
 
-$this->title = '上传课件-内部使用';
+$this->title = '上传课件';
 $this->params['breadcrumbs'][] = ['label' => '课件列表', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 

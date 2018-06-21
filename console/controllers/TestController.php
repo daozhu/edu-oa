@@ -67,33 +67,6 @@ class TestController extends Controller
     }
 
 
-    /*
-     * read word
-     * */
-    public function actionReadWord()
-    {
-        //$path = Yii::getAlias('@backend').'/upload/paper/test-21.docx';
-        $path = '/Users/jingzhiheng/Desktop/test-22.docx';
-
-        // 实例化
-        $text = new Docx2Txt();
-        // 加载docx文件
-        $text->setDocx($path);
-        // 将内容存入$docx变量中
-        //$docx = $text->extract();
-        $docx = $text->resolve();
-        // 调试输出
-        //var_dump($docx);
-
-        //require_once Yii::$app->basePath.'/../vendor/phpoffice/phpword/samples/Sample_Header.php';
-        //$path = Yii::getAlias('@backend').'/upload/paper/test.docx';
-        //$phpWord = \PhpOffice\PhpWord\IOFactory::load($path);
-        //print_r($phpWord);
-        //echo write($phpWord, basename(Yii::getAlias('@backend').'/upload/paper/ee', '.php'), $writers);
-        //$this->stdout($path, BaseConsole::FG_RED);
-
-    }
-
     /**
      * 百度文档
      */
@@ -113,12 +86,17 @@ class TestController extends Controller
 
         $model = new \common\models\BaiDuDoc($dos_config);
 
+        //$ret = $model->status("status=PUBLISHED");
+        //print_r(ArrayHelper::toArray(json_decode($ret)));
+        //return;
         $data = [
             'title' => 'myfirstdoc',
             'format' => 'docx',
         ];
-        //$ret = $model->register($data);
+        $ret = $model->register($data);
 
+        print_r($ret);
+        die('5555');
         /*
          *
          *  [documentId] => doc-iegrqase8ukmfdn
@@ -133,7 +111,7 @@ class TestController extends Controller
         //print_r(ArrayHelper::toArray(json_decode($ret)));
         //return;
 
-        $query = "source=bos";
+        $query = "";
         $data = [
             //'source' => 'bos',
             'bucket' => 'office',//
@@ -146,7 +124,7 @@ class TestController extends Controller
         $data = [
             'documentId' => 'doc-iegrqase8ukmfdn',
         ];
-        //$ret = $model->publish($data, $data['documentId']);
+        //$ret = $model->publish($data['documentId']);
 
 
         $uri = 'doc-iegrqase8ukmfdn';

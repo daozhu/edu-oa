@@ -132,14 +132,11 @@ class OfficeController extends Controller
         $model = Office::findOne($id);
         if (empty($id)
             || empty($model->file)) {
-            return $id;
+            return "不存在 ".$id;
         }
 
-        $url = "https://view.officeapps.live.com/op/view.aspx?src=http%3A%2F%2Ftest.web.huirunjieti.com%2Foffice%2Fview-online%3Fid%3D2&wdStartOn=1&wdPrint=0&wdEmbedCode=0";
-
-        //$content = file_get_contents($url);
-
-        Yii::$app->response->sendFile($model->file);
+        return $this->render('view', [
+            'model' => $model,
+        ]);
     }
-
 }
