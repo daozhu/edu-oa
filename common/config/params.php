@@ -3,6 +3,6 @@ return [
     'adminEmail' => 'admin@example.com',
     'supportEmail' => 'support@example.com',
     'user.passwordResetTokenExpire' => 3600,
-    "baidu_ak" => 'c2a4167a495e4636b454d73533130523',
-    "baidu_sk" => '3bfd1bfad60048908f7dc4e712d04c0c',
+    "baidu_ak" => '3e472e762a4746e98f862340d71bb87a',
+    "baidu_sk" => '9e3bdbb096ba4140acd2f53f3e13b087',
 ];
