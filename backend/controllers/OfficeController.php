@@ -131,6 +131,11 @@ class OfficeController extends HrjtController
 
     public function actionExport()
     {
+        ignore_user_abort(true);
+        set_time_limit(0);
+        ini_set('memory_limit','1024M');
+        ini_set('post_max_size','124M');
+        ini_set('upload_max_filesize','124M');
         $model = new OfficeExport();
         $ret = '';
         if (Yii::$app->request->isPost) {
