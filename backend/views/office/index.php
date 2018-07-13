@@ -35,13 +35,13 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class'  => 'yii\grid\ActionColumn',
                 'header' => '操作',
-                'template' => '{cancel} {share} {delete}',
+                'template' => '{cancel} {share} {msShare} {delete}',
                 'buttons' => [
                     'share' => function ($url, $model, $key) {
                         $url = $model->viewUrl;
                         $share_data = $model->share;
                         $option = [
-                            'title'     => '预览',
+                            'title'     => '安全预览',
                             'data_plax' => 0,
                             'data-url'  => $url,
                             'class'     => 'btn btn-success',
@@ -52,7 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         if (!isset($share_data['status']) || $share_data['status'] != 1) {
                             return '';
                         }
-                        return Html::a("预览", $url."&code=".$share_data['encrypt'], $option);
+                        return Html::a("安全预览", $url."&code=".$share_data['encrypt'], $option);
 
                     },
                     'delete' => function($url, $model, $key) {
@@ -72,7 +72,25 @@ $this->params['breadcrumbs'][] = $this->title;
                             return Html::a("分享", $url, $option);
                         }
                         return Html::a("取消分享", $url, $option);
-                    }
+                    },
+                    'msShare' => function ($url, $model, $key) {
+                        $url = $model->msOnlineUrl;
+                        $share_data = $model->share;
+                        $option = [
+                            'title'     => '原生预览',
+                            'data_plax' => 0,
+                            'data-url'  => $url,
+                            'class'     => 'btn btn-success',
+                            //'onclick'   => 'show_file()',
+                            'target'    => '_blank',
+                        ];
+
+                        if (!isset($share_data['status']) || $share_data['status'] != 1) {
+                            return '';
+                        }
+                        return Html::a("原生预览", $url."&code=".$share_data['encrypt'], $option);
+
+                    },
                 ],
             ],
         ],

@@ -139,4 +139,21 @@ class OfficeController extends Controller
             'model' => $model,
         ]);
     }
+    public function actionViewMsOnline()
+    {
+        $id = Yii::$app->request->get('id', 0);
+
+        $model = Office::findOne($id);
+        if (empty($id)
+            || empty($model->file)) {
+            return null;
+        }
+
+        $share_data = $model->share;
+        if (!isset($share_data['status']) || $share_data['status'] != 1) {
+            return null;
+        }
+
+        Yii::$app->response->sendFile($model->file);
+    }
 }
