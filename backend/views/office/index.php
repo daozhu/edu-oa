@@ -113,7 +113,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
 
                     'delete' => function($url, $model, $key) {
-                        if (empty($model->fileSize)) return null;
                         $option = [
                             'title'     => '删除',
                             'class'     => 'btn btn-success show_file',

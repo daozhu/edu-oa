@@ -11,7 +11,7 @@ if (!isset($stat['status']) || $stat['status'] != "PUBLISHED") {
 }
 
 $share = $model->share;
-if (!isset($share['status']) || $share['status'] != 1){
+if (!isset($share['status']) || $share['status'] == 0){
     $staus = 2;
 }
 
