@@ -27,6 +27,7 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
 
+    private $user_group_id = 999;
 
     /**
      * @inheritdoc
@@ -192,13 +193,15 @@ class User extends ActiveRecord implements IdentityInterface
     //user role
     public function getUserRole($username = '')
     {
-        if (empty($username)) $username = Yii::$app->user->identity->username;
-        $sql = "select * from hrjt_user where username = '".$username."'";
-        $ret = Yii::$app->db_exam->createCommand($sql)->queryOne();
-        if (!empty($ret)) {
-            return $ret['usergroupid'];
+        if ($this->user_group_id == 999) {
+            if (empty($username)) $username = Yii::$app->user->identity->username;
+            $sql = "select * from hrjt_user where username = '".$username."'";
+            $ret = Yii::$app->db_exam->createCommand($sql)->queryOne();
+            if (!empty($ret)) {
+                $this->user_group_id = $ret['usergroupid'];
+            }
         }
-        return 0;
+        return $this->user_group_id;
     }
 
     /**
@@ -210,6 +213,22 @@ class User extends ActiveRecord implements IdentityInterface
     public static function findByMobile($mobile)
     {
         return static::findOne(['mobile' => $mobile, 'status' => self::STATUS_ACTIVE]);
+    }
+
+    public function isAdmin()
+    {
+        if ($this->user_group_id == 999) $this->getUserRole();
+
+        if ($this->user_group_id == 1) return true;
+        return false;
+    }
+
+    public function isTeacher()
+    {
+        if ($this->user_group_id == 999) $this->getUserRole();
+
+        if ($this->user_group_id == 9) return true;
+        return false;
     }
 
 }

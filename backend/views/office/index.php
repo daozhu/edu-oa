@@ -74,6 +74,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         return Html::a("取消预览", $url, $option);
                     },
                     'msShare' => function ($url, $model, $key) {
+                        if (!Yii::$app->user->identity->isAdmin()) return null;
                         $url = $model->msOnlineUrl;
                         $share_data = $model->share;
                         $option = [
@@ -95,6 +96,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                     },
                     'safe-share' => function ($url, $model, $key) {
+                        if (!Yii::$app->user->identity->isAdmin()) return null;
                         $share_data = $model->share;
                         $option = [
                             'title'     => '原生预览',
