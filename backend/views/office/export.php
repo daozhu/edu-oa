@@ -45,7 +45,7 @@ if (!empty($flash)) {
 
     <?= $form->field($model, 'up_file')->label('上传课件')->fileInput() ?>
     <div>
-        <b style="color: red"> * 原生预览的文件的大小不应大于10M </b>
+        <b style="color: red"> * 原生预览对文件的大小有限制 (ppt小于5M,word及excel小于10M) </b>
         <p id="fileName"></p>
         <img src="" id="fileImg">
     </div>
