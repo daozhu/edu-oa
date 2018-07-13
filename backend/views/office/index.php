@@ -85,8 +85,12 @@ $this->params['breadcrumbs'][] = $this->title;
                             'target'    => '_blank',
                         ];
 
-                        if (isset($share_data['status']) && $share_data['status'] == 2 && $model->isSafe) {
-                            $option['title'] = "不支持超过10M的文件的原生预览";
+                        if (isset($share_data['status']) && $share_data['status'] == 2) {
+                            if (!$model->isSafe) {
+                                $option['class'] = "btn btn-warning disabled";
+                                $option['title'] = "不支持超过10M的文件的原生预览";
+                            }
+
                             return Html::a("原生预览", $url, $option);
                         }
                     },
@@ -107,6 +111,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
 
                         if (isset($share_data['status']) && $share_data['status'] == 1) {
+                            if (!$model->isSafe) {
+                                $option['class'] = "btn btn-waring disabled";
+                                $option['title'] = "不支持超过10M的文件的原生预览";
+                            }
                             return Html::a("开放原生预览", $url, $option);
                         }
                         return null;

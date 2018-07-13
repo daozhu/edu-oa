@@ -150,7 +150,7 @@ class OfficeController extends Controller
         }
 
         $share_data = $model->share;
-        if (!isset($share_data['status']) || $share_data['status'] != 1) {
+        if (!isset($share_data['status']) || $share_data['status'] != 2) {
             return null;
         }
 
