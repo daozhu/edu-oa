@@ -180,4 +180,18 @@ class OfficeController extends HrjtController
         $this->redirect(['index']);
         Yii::$app->end();
     }
+
+    public function actionSafeShare($id)
+    {
+        $pub_ret = Office::toggleSafeShare($id);
+
+        if ($pub_ret['code'] != 200) {
+            Yii::$app->getSession()->setFlash('warning', $pub_ret['msg']);
+        } else {
+            Yii::$app->getSession()->setFlash('success', $pub_ret['msg']);
+        }
+
+        $this->redirect(['index']);
+        Yii::$app->end();
+    }
 }

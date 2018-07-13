@@ -348,4 +348,58 @@ class Office extends \yii\db\ActiveRecord
     {
         return mt_rand(10000,99999);
     }
+
+    public function getFileSize()
+    {
+        if (empty($this->file) || !file_exists($this->file)) return 0;
+
+        $rank=0;
+        $size=filesize($this->file);
+        $unit="B";
+        while($size>1024){
+            $size=$size/1024;
+            $rank++;
+        }
+        $size=round($size,2);
+        switch ($rank){
+            case "1":
+                $unit="KB";
+                break;
+            case "2":
+                $unit="MB";
+                break;
+            case "3":
+                $unit="GB";
+                break;
+            case "4":
+                $unit="TB";
+                break;
+            default :
+
+        }
+        return $size." ".$unit;
+    }
+
+    public function getIsSafe()
+    {
+        $size = $this->getFileSize();
+
+        if (strpos($size, "K") !== false) return true;
+        if (stripos($size, 'M') !== false) {
+            $rank = str_ireplace('MB', '', $size);
+            if (intval($rank) < 10) return true;
+        }
+        return false;
+    }
+
+    public static function toggleSafeShare($file_id)
+    {
+        $share = (new \yii\db\Query())->from('hrjt_office_share')->where(['file_id' => $file_id])->one();
+        $flag = 2;
+        if (!isset($share['status']) || $share['status'] != 1) {
+            $flag = 1;
+        }
+        return self::share($file_id, $flag);
+    }
+
 }

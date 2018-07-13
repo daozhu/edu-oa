@@ -31,13 +31,19 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label'     => '文件类型',
                 'filter'    => $searchModel::$type
             ],
-
+            [
+                'label' => '大小',
+                'value' => function ($model) {
+                    return $model->fileSize;
+                },
+            ],
             [
                 'class'  => 'yii\grid\ActionColumn',
                 'header' => '操作',
-                'template' => '{cancel} {share} {msShare} {delete}',
+                'template' => '{cancel} {share} {msShare} {safe-share}  {delete}',
                 'buttons' => [
                     'share' => function ($url, $model, $key) {
+                        if (empty($model->fileSize)) return null;
                         $url = $model->viewUrl;
                         $share_data = $model->share;
                         $option = [
@@ -49,29 +55,23 @@ $this->params['breadcrumbs'][] = $this->title;
                             'target'    => '_blank',
                         ];
 
-                        if (!isset($share_data['status']) || $share_data['status'] != 1) {
+                        if (!isset($share_data['status']) || $share_data['status'] == 0) {
                             return '';
                         }
                         return Html::a("安全预览", $url."&code=".$share_data['encrypt'], $option);
 
                     },
-                    'delete' => function($url, $model, $key) {
-                        $option = [
-                            'title'     => '删除',
-                            'class'     => 'btn btn-success show_file',
-                        ];
-                        return Html::a("删除", $url, $option);
-                    },
                     'cancel' => function($url, $model, $key) {
+                        if (empty($model->fileSize)) return null;
                         $share_data = $model->share;
                         $option = [
                             'title'     => '分享操作',
                             'class'     => 'btn btn-success',
                         ];
-                        if (!isset($share_data['status']) || $share_data['status'] != 1) {
-                            return Html::a("分享", $url, $option);
+                        if (!isset($share_data['status']) || $share_data['status'] == 0) {
+                            return Html::a("允许预览", $url, $option);
                         }
-                        return Html::a("取消分享", $url, $option);
+                        return Html::a("取消预览", $url, $option);
                     },
                     'msShare' => function ($url, $model, $key) {
                         $url = $model->msOnlineUrl;
@@ -85,11 +85,40 @@ $this->params['breadcrumbs'][] = $this->title;
                             'target'    => '_blank',
                         ];
 
-                        if (!isset($share_data['status']) || $share_data['status'] != 1) {
-                            return '';
+                        if (isset($share_data['status']) && $share_data['status'] == 2 && $model->isSafe) {
+                            $option['title'] = "不支持超过10M的文件的原生预览";
+                            return Html::a("原生预览", $url, $option);
                         }
-                        return Html::a("原生预览", $url."&code=".$share_data['encrypt'], $option);
+                    },
+                    'safe-share' => function ($url, $model, $key) {
+                        $share_data = $model->share;
+                        $option = [
+                            'title'     => '原生预览',
+                            'data_plax' => 0,
+                            'data-url'  => $url,
+                            'class'     => 'btn btn-success',
+                            //'onclick'   => 'show_file()',
+                            'target'    => '_blank',
+                        ];
+                        if (empty($model->fileSize)) return null;
 
+                        if (isset($share_data['status']) && $share_data['status'] == 2) {
+                            return Html::a("禁止原生预览", $url, $option);
+                        }
+
+                        if (isset($share_data['status']) && $share_data['status'] == 1) {
+                            return Html::a("开放原生预览", $url, $option);
+                        }
+                        return null;
+                    },
+
+                    'delete' => function($url, $model, $key) {
+                        if (empty($model->fileSize)) return null;
+                        $option = [
+                            'title'     => '删除',
+                            'class'     => 'btn btn-success show_file',
+                        ];
+                        return Html::a("删除", $url, $option);
                     },
                 ],
             ],
